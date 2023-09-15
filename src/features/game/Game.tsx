@@ -1,6 +1,11 @@
-import { useAppSelector } from "../../app/hooks"
-import { RootState } from "../../app/store"
-import { PlayerSymbol, boardState } from "./slice"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import {
+  PlayerSymbol,
+  boardState,
+  currentPlayerState,
+  gameRestarted,
+  movePlayed,
+} from "./slice"
 import styles from "./Game.module.css"
 
 interface CellProps {
@@ -9,12 +14,25 @@ interface CellProps {
 }
 
 const Cell = (props: CellProps) => {
+  const dispatch = useAppDispatch()
   const onCellClicked = (id: string) => {
-    console.log(`Cell ${id} was clicked`)
+    dispatch(
+      movePlayed({
+        player: {
+          name: "P1",
+        },
+        symbol: Math.round(1 + Math.random()) === 1 ? "O" : "X",
+        position: parseInt(id),
+      }),
+    )
   }
 
   return (
-    <div className={styles.cell} onClick={() => onCellClicked(props.id)}>
+    <div
+      style={{ pointerEvents: props.symbol === null ? "auto" : "none" }}
+      className={styles.cell}
+      onClick={() => onCellClicked(props.id)}
+    >
       {props.symbol}
     </div>
   )
@@ -32,5 +50,22 @@ function Board() {
 }
 
 export function Game() {
-  return <Board />
+  const currentPlayer = useAppSelector(currentPlayerState)
+  const dispatch = useAppDispatch()
+  return (
+    <>
+      <div className={styles.row}>
+        {currentPlayer.name}
+        <Board />
+      </div>
+      <div className={styles.row}>
+        <button
+          className={styles.button}
+          onClick={() => dispatch(gameRestarted())}
+        >
+          Restart game
+        </button>
+      </div>
+    </>
+  )
 }
