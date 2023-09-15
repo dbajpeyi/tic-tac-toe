@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit"
 import { BOARD_SIZE } from "./const"
 import { RootState } from "../../app/store"
 
-type PlayerSymbol = "X" | "O" | null
-interface Cell {
+export type PlayerSymbol = "X" | "O" | null
+export interface Cell {
   symbol: PlayerSymbol
   id: string
 }

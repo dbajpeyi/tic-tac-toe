@@ -1,13 +1,34 @@
 import { useAppSelector } from "../../app/hooks"
 import { RootState } from "../../app/store"
-import { boardState } from "./slice"
+import { PlayerSymbol, boardState } from "./slice"
+import styles from "./Game.module.css"
 
-function Cell() {}
+interface CellProps {
+  symbol: PlayerSymbol
+  id: string
+}
+
+const Cell = (props: CellProps) => {
+  const onCellClicked = (id: string) => {
+    console.log(`Cell ${id} was clicked`)
+  }
+
+  return (
+    <div className={styles.cell} onClick={() => onCellClicked(props.id)}>
+      {props.symbol}
+    </div>
+  )
+}
 
 function Board() {
   const board = useAppSelector(boardState)
-  console.log("BOARD", board)
-  return board.map((cell) => <div key={cell.id}>{cell.symbol}</div>)
+  return (
+    <div className={styles.grid}>
+      {board.map((item) => (
+        <Cell {...item} key={item.id} />
+      ))}
+    </div>
+  )
 }
 
 export function Game() {
