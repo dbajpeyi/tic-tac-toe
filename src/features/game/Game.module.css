@@ -26,6 +26,10 @@
   cursor: pointer;
 }
 
+.cell.highlighted {
+  background-color: aquamarine;
+}
+
 .button {
   appearance: none;
   background: none;

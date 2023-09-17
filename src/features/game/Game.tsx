@@ -5,23 +5,29 @@ import {
   currentPlayerState,
   gameRestarted,
   movePlayed,
+  winningCellsState,
 } from "./slice"
 import styles from "./Game.module.css"
+import { useEffect } from "react"
 
 interface CellProps {
   symbol: PlayerSymbol
+  isHighlighted: boolean
   id: string
+}
+
+interface BoardProps {
+  cellsToHighlight?: number[]
 }
 
 const Cell = (props: CellProps) => {
   const dispatch = useAppDispatch()
+  const currentPlayer = useAppSelector(currentPlayerState)
   const onCellClicked = (id: string) => {
     dispatch(
       movePlayed({
-        player: {
-          name: "P1",
-        },
-        symbol: Math.round(1 + Math.random()) === 1 ? "O" : "X",
+        player: currentPlayer,
+        symbol: currentPlayer.symbol!,
         position: parseInt(id),
       }),
     )
@@ -30,7 +36,7 @@ const Cell = (props: CellProps) => {
   return (
     <div
       style={{ pointerEvents: props.symbol === null ? "auto" : "none" }}
-      className={styles.cell}
+      className={`${styles.cell} ${props.isHighlighted && styles.highlighted}`}
       onClick={() => onCellClicked(props.id)}
     >
       {props.symbol}
@@ -38,25 +44,38 @@ const Cell = (props: CellProps) => {
   )
 }
 
-function Board() {
+function Board(props: BoardProps) {
   const board = useAppSelector(boardState)
   return (
     <div className={styles.grid}>
-      {board.map((item) => (
-        <Cell {...item} key={item.id} />
-      ))}
+      {board.map((item) => {
+        console.log(item, props.cellsToHighlight)
+        return (
+          <Cell
+            {...{
+              ...item,
+              isHighlighted: props.cellsToHighlight
+                ? props.cellsToHighlight.includes(+item.id)
+                : false,
+            }}
+            key={item.id}
+          />
+        )
+      })}
     </div>
   )
 }
 
 export function Game() {
   const currentPlayer = useAppSelector(currentPlayerState)
+  const winningCells = useAppSelector(winningCellsState)
+  console.log(winningCells)
   const dispatch = useAppDispatch()
   return (
     <>
       <div className={styles.row}>
         {currentPlayer.name}
-        <Board />
+        <Board cellsToHighlight={winningCells} />
       </div>
       <div className={styles.row}>
         <button
