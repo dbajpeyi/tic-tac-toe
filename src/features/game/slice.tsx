@@ -8,7 +8,7 @@ export interface Cell {
   id: string
 }
 
-type Board = Array<Cell>
+export type Board = Array<Cell>
 
 export interface Player {
   symbol?: PlayerSymbol
@@ -30,7 +30,7 @@ export interface State {
   winningCells?: number[]
 }
 
-function getInitialBoard(): Board {
+export function getInitialBoard(): Board {
   const board: Board = []
   for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
     board.push({ symbol: null, id: i.toString() })
@@ -57,7 +57,7 @@ const allWinningCells = [
   [2, 4, 6],
 ]
 
-function getInitialState(): State {
+export function getInitialState(): State {
   return {
     board: getInitialBoard(),
     currentPlayer: { name: "Player 1", symbol: "X" },
