@@ -5,15 +5,14 @@ import { RootState } from "../../app/store"
 export type PlayerSymbol = "X" | "O" | null
 export interface Cell {
   symbol: PlayerSymbol
-
   id: string
 }
 
 type Board = Array<Cell>
 
-interface Player {
+export interface Player {
   symbol?: PlayerSymbol
-  name: "P1" | "P2"
+  name: "Player 1" | "Player 2"
 }
 
 interface Move {
@@ -22,7 +21,7 @@ interface Move {
   position: number
 }
 
-type GameStatus = "in-progress" | "win" | "draw"
+export type GameStatus = "in-progress" | "win" | "draw"
 
 export interface State {
   board: Board
@@ -61,7 +60,7 @@ const allWinningCells = [
 function getInitialState(): State {
   return {
     board: getInitialBoard(),
-    currentPlayer: { name: "P1", symbol: "X" },
+    currentPlayer: { name: "Player 1", symbol: "X" },
     gameStatus: "in-progress",
   }
 }
@@ -114,14 +113,14 @@ const slice = createSlice({
       state.winningCells = winningCells
       if (gameStatus === "in-progress") {
         const currentPlayerName = state.currentPlayer.name
-        if (currentPlayerName === "P1") {
+        if (currentPlayerName === "Player 1") {
           state.currentPlayer = {
-            name: "P2",
+            name: "Player 2",
             symbol: "O",
           }
         } else {
           state.currentPlayer = {
-            name: "P1",
+            name: "Player 1",
             symbol: "X",
           }
         }

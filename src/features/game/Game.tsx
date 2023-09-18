@@ -1,9 +1,12 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import {
+  GameStatus,
+  Player,
   PlayerSymbol,
   boardState,
   currentPlayerState,
   gameRestarted,
+  gameStatusState,
   movePlayed,
   winningCellsState,
 } from "./slice"
@@ -13,6 +16,7 @@ import { useEffect } from "react"
 interface CellProps {
   symbol: PlayerSymbol
   isHighlighted: boolean
+  isDisabled: boolean
   id: string
 }
 
@@ -20,7 +24,7 @@ interface BoardProps {
   cellsToHighlight?: number[]
 }
 
-const Cell = (props: CellProps) => {
+function Cell(props: CellProps) {
   const dispatch = useAppDispatch()
   const currentPlayer = useAppSelector(currentPlayerState)
   const onCellClicked = (id: string) => {
@@ -35,7 +39,7 @@ const Cell = (props: CellProps) => {
 
   return (
     <div
-      style={{ pointerEvents: props.symbol === null ? "auto" : "none" }}
+      style={{ pointerEvents: props.isDisabled ? "none" : "auto" }}
       className={`${styles.cell} ${props.isHighlighted && styles.highlighted}`}
       onClick={() => onCellClicked(props.id)}
     >
@@ -57,6 +61,7 @@ function Board(props: BoardProps) {
               isHighlighted: props.cellsToHighlight
                 ? props.cellsToHighlight.includes(+item.id)
                 : false,
+              isDisabled: item.symbol != null || props.cellsToHighlight != null,
             }}
             key={item.id}
           />
@@ -66,15 +71,33 @@ function Board(props: BoardProps) {
   )
 }
 
+function getTurnInfoText(
+  currentPlayer: Player,
+  gameStatus: GameStatus,
+): string {
+  if (gameStatus === "in-progress") {
+    return `${currentPlayer.name}'s turn!`
+  } else if (gameStatus === "win") {
+    return `${currentPlayer.name} won!`
+  } else {
+    return "It's a draw"
+  }
+}
+
 export function Game() {
   const currentPlayer = useAppSelector(currentPlayerState)
   const winningCells = useAppSelector(winningCellsState)
+  const gameStatus = useAppSelector(gameStatusState)
   console.log(winningCells)
   const dispatch = useAppDispatch()
   return (
     <>
       <div className={styles.row}>
-        {currentPlayer.name}
+        <p style={{ alignSelf: "center" }}>
+          {getTurnInfoText(currentPlayer, gameStatus)}
+        </p>
+      </div>
+      <div className={styles.row}>
         <Board cellsToHighlight={winningCells} />
       </div>
       <div className={styles.row}>

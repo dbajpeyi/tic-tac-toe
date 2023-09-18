@@ -8,6 +8,10 @@
   margin-top: 20px;
 }
 
+.row > p {
+  color: black;
+}
+
 .grid {
   display: grid;
   gap: 2px;
