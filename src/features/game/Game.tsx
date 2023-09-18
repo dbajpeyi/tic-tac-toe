@@ -80,7 +80,7 @@ function getTurnInfoText(
   } else if (gameStatus === "win") {
     return `${currentPlayer.name} won!`
   } else {
-    return "It's a draw"
+    return "It's a draw!"
   }
 }
 
@@ -88,7 +88,6 @@ export function Game() {
   const currentPlayer = useAppSelector(currentPlayerState)
   const winningCells = useAppSelector(winningCellsState)
   const gameStatus = useAppSelector(gameStatusState)
-  console.log(winningCells)
   const dispatch = useAppDispatch()
   return (
     <>

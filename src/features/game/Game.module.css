@@ -9,6 +9,7 @@
 }
 
 .row > p {
+  font-size: 18px;
   color: black;
 }
 
@@ -47,7 +48,7 @@
   color: black;
   padding-bottom: 4px;
   cursor: pointer;
-  background-color: aquamarine;
+  background-color: aqua;
   border-radius: 1px;
   transition: all 0.15s;
 }
