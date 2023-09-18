@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { Draft, PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { BOARD_SIZE } from "./const"
 import { RootState } from "../../app/store"
 
@@ -89,6 +89,20 @@ function getGameStatusAndWinningCells(board: Board): {
   }
 }
 
+function getNextPlayer(currentPlayerName: "Player 1" | "Player 2"): Player {
+  if (currentPlayerName === "Player 1") {
+    return {
+      name: "Player 2",
+      symbol: "O",
+    }
+  } else {
+    return {
+      name: "Player 1",
+      symbol: "X",
+    }
+  }
+}
+
 const initialState: State = getInitialState()
 
 const slice = createSlice({
@@ -112,18 +126,7 @@ const slice = createSlice({
       state.gameStatus = gameStatus
       state.winningCells = winningCells
       if (gameStatus === "in-progress") {
-        const currentPlayerName = state.currentPlayer.name
-        if (currentPlayerName === "Player 1") {
-          state.currentPlayer = {
-            name: "Player 2",
-            symbol: "O",
-          }
-        } else {
-          state.currentPlayer = {
-            name: "Player 1",
-            symbol: "X",
-          }
-        }
+        state.currentPlayer = getNextPlayer(state.currentPlayer.name)
       }
     },
     gameRestarted: () => {
