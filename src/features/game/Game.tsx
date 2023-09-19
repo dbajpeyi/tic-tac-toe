@@ -1,11 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import {
-  boardState,
-  currentPlayerState,
-  gameRestarted,
-  gameStatusState,
-  winningCellsState,
-} from "./slice"
+import { boardState, gameRestarted, winningCellsState } from "./slice"
 import styles from "./Game.module.css"
 import { Board } from "./Board"
 import { isBoardEmpty } from "./utils"
@@ -63,7 +57,7 @@ export function Game() {
           onClick={() => dispatch(gameRestarted())}
           disabled={isBoardEmpty(board)}
         >
-          Restart game
+          New game
         </button>
       </div>
     </>

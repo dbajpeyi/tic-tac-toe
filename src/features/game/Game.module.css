@@ -8,9 +8,12 @@
   margin-top: 20px;
 }
 
-.row > p {
+.row > .turninfo {
+  margin-top: 40px;
+  margin-bottom: 20px;
   font-size: 18px;
-  color: black;
+  font-weight: 900;
+  color: slategray;
 }
 
 .grid {
@@ -45,10 +48,10 @@
   padding-right: 12px;
   outline: none;
   border: 2px solid transparent;
-  color: black;
+  color: white;
   padding-bottom: 4px;
   cursor: pointer;
-  background-color: aqua;
+  background-color: steelblue;
   border-radius: 1px;
   transition: all 0.15s;
 }
