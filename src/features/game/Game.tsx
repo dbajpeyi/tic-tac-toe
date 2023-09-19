@@ -2,74 +2,13 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import {
   GameStatus,
   Player,
-  PlayerSymbol,
-  boardState,
   currentPlayerState,
   gameRestarted,
   gameStatusState,
-  movePlayed,
   winningCellsState,
 } from "./slice"
 import styles from "./Game.module.css"
-import { useEffect } from "react"
-
-interface CellProps {
-  symbol: PlayerSymbol
-  isHighlighted: boolean
-  isDisabled: boolean
-  id: string
-}
-
-interface BoardProps {
-  cellsToHighlight?: number[]
-}
-
-function Cell(props: CellProps) {
-  const dispatch = useAppDispatch()
-  const currentPlayer = useAppSelector(currentPlayerState)
-  const onCellClicked = (id: string) => {
-    dispatch(
-      movePlayed({
-        player: currentPlayer,
-        symbol: currentPlayer.symbol!,
-        position: parseInt(id),
-      }),
-    )
-  }
-
-  return (
-    <div
-      style={{ pointerEvents: props.isDisabled ? "none" : "auto" }}
-      className={`${styles.cell} ${props.isHighlighted && styles.highlighted}`}
-      onClick={() => onCellClicked(props.id)}
-    >
-      {props.symbol}
-    </div>
-  )
-}
-
-function Board(props: BoardProps) {
-  const board = useAppSelector(boardState)
-  return (
-    <div className={styles.grid}>
-      {board.map((item) => {
-        console.log(item, props.cellsToHighlight)
-        return (
-          <Cell
-            {...{
-              ...item,
-              isHighlighted: props.cellsToHighlight
-                ? props.cellsToHighlight.includes(+item.id)
-                : false,
-              isDisabled: item.symbol != null || props.cellsToHighlight != null,
-            }}
-            key={item.id}
-          />
-        )
-      })}
-    </div>
-  )
-}
+import { Board } from "./Board"
 
 function getTurnInfoText(
   currentPlayer: Player,
