@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import {
-  GameStatus,
-  Player,
+  boardState,
   currentPlayerState,
   gameRestarted,
   gameStatusState,
@@ -9,31 +8,51 @@ import {
 } from "./slice"
 import styles from "./Game.module.css"
 import { Board } from "./Board"
+import { isBoardEmpty } from "./utils"
+import { Settings } from "./Settings"
+import { TurnInfo } from "./TurnInfo"
 
-function getTurnInfoText(
-  currentPlayer: Player,
-  gameStatus: GameStatus,
-): string {
-  if (gameStatus === "in-progress") {
-    return `${currentPlayer.name}'s turn!`
-  } else if (gameStatus === "win") {
-    return `${currentPlayer.name} won!`
-  } else {
-    return "It's a draw!"
-  }
+interface DropDownProps {
+  name: string
+  optionValues: string[]
+  isDisabled: boolean
+  onSelected: (value: string) => void
+}
+
+export function DropDown({
+  name,
+  optionValues,
+  isDisabled,
+  onSelected,
+}: DropDownProps) {
+  return (
+    <>
+      <select
+        name={name}
+        onChange={(e) => onSelected(e.target.value)}
+        disabled={isDisabled}
+      >
+        {optionValues.map((value) => (
+          <option>{value}</option>
+        ))}
+      </select>
+    </>
+  )
 }
 
 export function Game() {
-  const currentPlayer = useAppSelector(currentPlayerState)
   const winningCells = useAppSelector(winningCellsState)
-  const gameStatus = useAppSelector(gameStatusState)
+  const board = useAppSelector(boardState)
+
   const dispatch = useAppDispatch()
+
   return (
     <>
       <div className={styles.row}>
-        <p style={{ alignSelf: "center" }}>
-          {getTurnInfoText(currentPlayer, gameStatus)}
-        </p>
+        <Settings />
+      </div>
+      <div className={styles.row}>
+        <TurnInfo />
       </div>
       <div className={styles.row}>
         <Board cellsToHighlight={winningCells} />
@@ -42,6 +61,7 @@ export function Game() {
         <button
           className={styles.button}
           onClick={() => dispatch(gameRestarted())}
+          disabled={isBoardEmpty(board)}
         >
           Restart game
         </button>

@@ -1,6 +1,13 @@
-import { Draft, PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { BOARD_SIZE } from "./const"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import {
+  BOARD_SIZE,
+  Mode,
+  VSMode,
+  Variation,
+  winningCellArrangement,
+} from "./const"
 import { RootState } from "../../app/store"
+import { isBoardFull } from "./utils"
 
 export type PlayerSymbol = "X" | "O" | null
 export interface Cell {
@@ -28,6 +35,9 @@ export interface State {
   currentPlayer: Player
   gameStatus: GameStatus
   winningCells?: number[]
+  mode: Mode
+  variation: Variation
+  vsMode: VSMode
 }
 
 export function getInitialBoard(): Board {
@@ -38,38 +48,22 @@ export function getInitialBoard(): Board {
   return board
 }
 
-const allWinningCells = [
-  // Row win
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-
-  //Column win
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-
-  // Diagonal
-  // (left->right)
-  [0, 4, 8],
-
-  // (right->left)
-  [2, 4, 6],
-]
-
 export function getInitialState(): State {
   return {
     board: getInitialBoard(),
     currentPlayer: { name: "Player 1", symbol: "X" },
     gameStatus: "in-progress",
+    mode: Mode.Regular,
+    variation: Variation.Standard,
+    vsMode: VSMode.Human,
   }
 }
 
-function getGameStatusAndWinningCells(board: Board): {
+function getGameStatusWithWinningCells(board: Board): {
   gameStatus: GameStatus
   winningCells?: number[]
 } {
-  const arrangement = allWinningCells
+  const arrangement = winningCellArrangement
     .flatMap((cells: number[]) => {
       return {
         item: cells
@@ -82,7 +76,7 @@ function getGameStatusAndWinningCells(board: Board): {
     .find(({ item, cells }) => item === "xxx" || item === "ooo")
   if (arrangement !== undefined) {
     return { gameStatus: "win", winningCells: arrangement.cells }
-  } else if (board.every((item) => item.symbol !== null)) {
+  } else if (isBoardFull(board)) {
     return { gameStatus: "draw" }
   } else {
     return { gameStatus: "in-progress" }
@@ -120,7 +114,7 @@ const slice = createSlice({
         symbol: action.payload.symbol,
         id: position.toString(),
       }
-      const { gameStatus, winningCells } = getGameStatusAndWinningCells(
+      const { gameStatus, winningCells } = getGameStatusWithWinningCells(
         state.board,
       )
       state.gameStatus = gameStatus
@@ -132,10 +126,25 @@ const slice = createSlice({
     gameRestarted: () => {
       return getInitialState()
     },
+    variationSelected: (state, action: PayloadAction<Variation>) => {
+      state.variation = action.payload
+    },
+    modeSelected: (state, action: PayloadAction<Mode>) => {
+      state.mode = action.payload
+    },
+    vsModeSelected: (state, action: PayloadAction<VSMode>) => {
+      state.vsMode = action.payload
+    },
   },
 })
 
-export const { movePlayed, gameRestarted } = slice.actions
+export const {
+  movePlayed,
+  gameRestarted,
+  variationSelected,
+  modeSelected,
+  vsModeSelected,
+} = slice.actions
 
 export const boardState = (state: RootState) => state.game.board
 export const currentPlayerState = (state: RootState) => state.game.currentPlayer

@@ -3,7 +3,7 @@ import { boardState } from "./slice"
 import styles from "./Game.module.css"
 import { Cell } from "./Cell"
 
-interface BoardProps {
+export interface BoardProps {
   cellsToHighlight?: number[]
 }
 
