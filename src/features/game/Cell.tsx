@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import {
-  Player,
   PlayerSymbol,
   currentPlayerState,
   movePlayed,

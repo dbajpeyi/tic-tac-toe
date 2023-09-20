@@ -1,10 +1,7 @@
 import { Mode, VSMode, Variation } from "../const"
 import gameReducer, {
-  Board,
-  PlayerSymbol,
   State,
   newGameStarted,
-  getInitialBoard,
   getInitialState,
   movePlayed,
   getDefaultFirstPlayer,
@@ -12,17 +9,6 @@ import gameReducer, {
   modeSelected,
   vsModeSelected,
 } from "../slice"
-
-function createRandomPenultimateBoard(skipCell: number): Board {
-  const initialBoard = getInitialBoard()
-  const randomMove = (): PlayerSymbol => {
-    return Math.random() >= 0.5 ? "X" : "O"
-  }
-  const randomBoard = initialBoard.map((cell, index) => {
-    return { id: cell.id, symbol: skipCell !== index ? randomMove() : null }
-  })
-  return randomBoard
-}
 
 describe("game reducer standard variation and regular mode", () => {
   describe("standard variation and regular mode", () => {
@@ -50,6 +36,7 @@ describe("game reducer standard variation and regular mode", () => {
       // Then game state was re-initialized
       expect(state2).toEqual(initialState)
     })
+
     it("should update board state on movePlayed action", () => {
       const movePosition = 4
       const actual = gameReducer(
@@ -62,6 +49,7 @@ describe("game reducer standard variation and regular mode", () => {
       )
       expect(actual.board[movePosition].symbol).toBe("X")
     })
+
     it("should update currentPlayer state on movePlayed action", () => {
       const movePosition = 4
       const actual = gameReducer(
@@ -74,6 +62,7 @@ describe("game reducer standard variation and regular mode", () => {
       )
       expect(actual.currentPlayer.name).toBe("Player 2")
     })
+
     it("should update gameStatus state on movePlayed action", () => {
       const firstMovePosition = 0
       const state1 = gameReducer(
@@ -105,6 +94,7 @@ describe("game reducer standard variation and regular mode", () => {
       expect(state3.gameStatus).toBe("win")
     })
   })
+
   describe("wild variation and misere mode", () => {
     // Given an initial state with wild variation and misere mode
     const initialState: State = {
@@ -124,7 +114,7 @@ describe("game reducer standard variation and regular mode", () => {
           symbol: "X",
         }),
       )
-      expect(state1.board[movePosition].symbol === "X")
+      expect(state1.board[movePosition].symbol).toBe("X")
       // And a new game is started
       const state2 = gameReducer(state1, newGameStarted())
 
@@ -132,6 +122,7 @@ describe("game reducer standard variation and regular mode", () => {
       expect(state2).toEqual(initialState)
     })
   })
+
   describe("settings", () => {
     it("changing variation updates the state correctly", () => {
       // Given default initial state
@@ -143,7 +134,7 @@ describe("game reducer standard variation and regular mode", () => {
       )
       // Then variation and current player are correctly set in the state
       expect(state1.variation).toBe(Variation.Wild)
-      expect(state1.currentPlayer.symbol).toBe(undefined)
+      expect(state1.currentPlayer.symbol).toBeUndefined()
 
       //When variation is selected
       const state2 = gameReducer(state1, variationSelected(Variation.Standard))
@@ -153,6 +144,7 @@ describe("game reducer standard variation and regular mode", () => {
       expect(state2.currentPlayer.symbol).toBe(getDefaultFirstPlayer().symbol)
     })
   })
+
   it("changing mode updates the state correctly", () => {
     // Given default initial state
     const initialState: State = getInitialState()
@@ -161,6 +153,7 @@ describe("game reducer standard variation and regular mode", () => {
     // Then the mode is correctly set in the state
     expect(state1.mode).toBe(Mode.Misere)
   })
+
   it("changing vs. mode updates the state correctly", () => {
     // Given default initial state
     const initialState: State = getInitialState()

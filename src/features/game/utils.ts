@@ -17,12 +17,12 @@ export function getNextPlayer(
   if (currentPlayerName === "Player 1") {
     return {
       name: "Player 2",
-      symbol: isWild ? null : "O",
+      symbol: isWild ? undefined : "O",
     }
   } else {
     return {
       name: "Player 1",
-      symbol: isWild ? null : "X",
+      symbol: isWild ? undefined : "X",
     }
   }
 }

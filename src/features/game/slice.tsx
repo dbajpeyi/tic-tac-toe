@@ -113,7 +113,7 @@ const slice = createSlice({
 
 export const {
   movePlayed,
-  newGameStarted: newGameStarted,
+  newGameStarted,
   variationSelected,
   modeSelected,
   vsModeSelected,
