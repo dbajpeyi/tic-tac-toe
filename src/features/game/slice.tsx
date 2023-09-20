@@ -42,10 +42,14 @@ export function getInitialBoard(): Board {
   return board
 }
 
+export function getDefaultFirstPlayer(): Player {
+  return { name: "Player 1", symbol: "X" }
+}
+
 export function getInitialState(): State {
   return {
     board: getInitialBoard(),
-    currentPlayer: { name: "Player 1", symbol: "X" },
+    currentPlayer: getDefaultFirstPlayer(),
     gameStatus: "in-progress",
     mode: Mode.Regular,
     variation: Variation.Standard,
@@ -76,7 +80,10 @@ const slice = createSlice({
       state.gameStatus = gameStatus
       state.winningCells = winningCells
       if (gameStatus === "in-progress") {
-        state.currentPlayer = getNextPlayer(state.currentPlayer.name)
+        state.currentPlayer = getNextPlayer(
+          state.currentPlayer.name,
+          state.variation,
+        )
       }
     },
     newGameStarted: (state) => {
@@ -85,14 +92,15 @@ const slice = createSlice({
       state.winningCells = undefined
       state.currentPlayer =
         state.variation === Variation.Standard
-          ? getInitialState().currentPlayer
+          ? getDefaultFirstPlayer()
           : { name: "Player 1" }
     },
     variationSelected: (state, action: PayloadAction<Variation>) => {
       state.variation = action.payload
-      if (state.variation === Variation.Wild) {
-        state.currentPlayer.symbol = null
-      }
+      state.currentPlayer =
+        state.variation === Variation.Wild
+          ? { name: "Player 1" }
+          : getDefaultFirstPlayer()
     },
     modeSelected: (state, action: PayloadAction<Mode>) => {
       state.mode = action.payload

@@ -1,4 +1,4 @@
-import { winningCellArrangement } from "./const"
+import { Variation, winningCellArrangement } from "./const"
 import { Board, GameStatus, Player } from "./slice"
 
 export function isBoardEmpty(board: Board) {
@@ -11,16 +11,18 @@ export function isBoardFull(board: Board) {
 
 export function getNextPlayer(
   currentPlayerName: "Player 1" | "Player 2",
+  variation: Variation,
 ): Player {
+  const isWild = variation === Variation.Wild
   if (currentPlayerName === "Player 1") {
     return {
       name: "Player 2",
-      symbol: "O",
+      symbol: isWild ? null : "O",
     }
   } else {
     return {
       name: "Player 1",
-      symbol: "X",
+      symbol: isWild ? null : "X",
     }
   }
 }
