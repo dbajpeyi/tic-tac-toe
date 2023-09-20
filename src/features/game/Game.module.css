@@ -9,13 +9,25 @@
 }
 
 .row > .turninfo {
-  margin-top: 40px;
+  margin-top: 20px;
   margin-bottom: 20px;
   font-size: 18px;
   font-weight: 900;
   color: slategray;
 }
 
+.extrainfowild {
+  top: 20px;
+  font-size: 12px;
+  font-weight: normal;
+  color: firebrick;
+}
+.extrainfomisere {
+  width: 240px;
+  font-size: 12px;
+  font-weight: normal;
+  color: firebrick;
+}
 .grid {
   display: grid;
   gap: 2px;

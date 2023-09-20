@@ -5,9 +5,10 @@ import {
   currentPlayerState,
   gameModeState,
   gameStatusState,
+  variationState,
 } from "./slice"
 import styles from "./Game.module.css"
-import { Mode } from "./const"
+import { Mode, Variation } from "./const"
 import { getNextPlayer } from "./utils"
 
 export function getTurnInfoText(
@@ -30,9 +31,20 @@ export function TurnInfo() {
   const currentPlayer = useAppSelector(currentPlayerState)
   const gameStatus = useAppSelector(gameStatusState)
   const mode = useAppSelector(gameModeState)
+  const variation = useAppSelector(variationState)
   return (
-    <p className={styles.turninfo}>
-      {getTurnInfoText(currentPlayer, gameStatus, mode)}
-    </p>
+    <>
+      <p className={styles.turninfo}>
+        {getTurnInfoText(currentPlayer, gameStatus, mode)}
+        {variation === Variation.Wild && (
+          <p className={styles.extrainfomisere}>
+            Use left click for "X", and right for "O"
+          </p>
+        )}
+        {mode === Mode.Misere && (
+          <p className={styles.extrainfowild}>Hint: try to loose ;) </p>
+        )}
+      </p>
+    </>
   )
 }
