@@ -1,3 +1,4 @@
+import { winningCellArrangement } from "./const"
 import { Board, GameStatus, Player } from "./slice"
 
 export function isBoardEmpty(board: Board) {
@@ -8,15 +9,39 @@ export function isBoardFull(board: Board) {
   return board.every((cell) => cell.symbol !== null)
 }
 
-export function getTurnInfoText(
-  currentPlayer: Player,
-  gameStatus: GameStatus,
-): string {
-  if (gameStatus === "in-progress") {
-    return `${currentPlayer.name}'s turn!`
-  } else if (gameStatus === "win") {
-    return `${currentPlayer.name} won!`
+export function getNextPlayer(
+  currentPlayerName: "Player 1" | "Player 2",
+): Player {
+  if (currentPlayerName === "Player 1") {
+    return {
+      name: "Player 2",
+      symbol: "O",
+    }
   } else {
-    return "It's a draw!"
+    return {
+      name: "Player 1",
+      symbol: "X",
+    }
+  }
+}
+
+export function getGameStatusWithWinningCells(board: Board): {
+  gameStatus: GameStatus
+  winningCells?: number[]
+} {
+  const arrangement = winningCellArrangement
+    .flatMap((cells: number[]) => {
+      return {
+        item: cells.map((index: number) => board[index].symbol).join(""),
+        cells,
+      }
+    })
+    .find(({ item, cells }) => item === "XXX" || item === "OOO")
+  if (arrangement !== undefined) {
+    return { gameStatus: "win", winningCells: arrangement.cells }
+  } else if (isBoardFull(board)) {
+    return { gameStatus: "draw" }
+  } else {
+    return { gameStatus: "in-progress" }
   }
 }

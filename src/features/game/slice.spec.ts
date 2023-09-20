@@ -2,7 +2,7 @@ import gameReducer, {
   Board,
   PlayerSymbol,
   State,
-  gameRestarted,
+  newGameStarted,
   getInitialBoard,
   getInitialState,
   movePlayed,
@@ -40,7 +40,7 @@ describe("game reducer", () => {
     )
     expect(state1.board[movePosition].symbol).toBe("X")
     // And game was restarted with that state
-    const state2 = gameReducer(state1, gameRestarted())
+    const state2 = gameReducer(state1, newGameStarted())
     // Then game state was re-initialized
     expect(state2).toEqual(initialState)
   })

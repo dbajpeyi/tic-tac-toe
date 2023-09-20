@@ -1,6 +1,13 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { PlayerSymbol, currentPlayerState, movePlayed } from "./slice"
+import {
+  Player,
+  PlayerSymbol,
+  currentPlayerState,
+  movePlayed,
+  variationState,
+} from "./slice"
 import styles from "./Game.module.css"
+import { Variation } from "./const"
 
 interface CellProps {
   symbol: PlayerSymbol
@@ -12,11 +19,13 @@ interface CellProps {
 export function Cell(props: CellProps) {
   const dispatch = useAppDispatch()
   const currentPlayer = useAppSelector(currentPlayerState)
-  const onCellClicked = (id: string) => {
+  const variation = useAppSelector(variationState)
+
+  const onCellClicked = (id: string, symbolPlayed: PlayerSymbol) => {
     dispatch(
       movePlayed({
         player: currentPlayer,
-        symbol: currentPlayer.symbol!,
+        symbol: symbolPlayed,
         position: parseInt(id),
       }),
     )
@@ -26,7 +35,21 @@ export function Cell(props: CellProps) {
     <div
       style={{ pointerEvents: props.isDisabled ? "none" : "auto" }}
       className={`${styles.cell} ${props.isHighlighted && styles.highlighted}`}
-      onClick={() => onCellClicked(props.id)}
+      onClick={(e) => {
+        if (variation === Variation.Standard) {
+          return onCellClicked(props.id, currentPlayer.symbol!)
+        } else if (variation === Variation.Wild) {
+          return onCellClicked(props.id, "X")
+        } else {
+          throw Error(`Unhan`)
+        }
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        if (variation === Variation.Wild) {
+          return onCellClicked(props.id, "O")
+        }
+      }}
     >
       {props.symbol}
     </div>
