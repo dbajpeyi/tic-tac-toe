@@ -48,7 +48,8 @@
     ],
     "rules": {
       "prettier/prettier": "error",
-      "react/jsx-no-target-blank": "off"
+      "react/jsx-no-target-blank": "off",
+      "no-console": "error"
     }
   },
   "prettier": "prettier-config-nick"
