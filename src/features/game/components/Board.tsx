@@ -12,7 +12,6 @@ export function Board(props: BoardProps) {
   return (
     <div className={styles.grid}>
       {board.map((item) => {
-        console.log(item, props.cellsToHighlight)
         return (
           <Cell
             {...{
