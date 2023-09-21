@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../app/hooks"
+import { useAppSelector } from "../../../app/hooks"
 import {
   GameStatus,
   Player,
@@ -6,9 +6,9 @@ import {
   gameModeState,
   gameStatusState,
   variationState,
-} from "./slice"
-import styles from "./Game.module.css"
-import { Mode, Variation } from "./const"
+} from "../slice"
+import styles from "../Game.module.css"
+import { Mode, Variation } from "../const"
 
 interface TurnTabItemProps {
   playerName: string

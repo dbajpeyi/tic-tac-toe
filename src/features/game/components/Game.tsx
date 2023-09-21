@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { boardState, newGameStarted, winningCellsState } from "./slice"
-import styles from "./Game.module.css"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
+import { boardState, newGameStarted, winningCellsState } from "../slice"
+import styles from "../Game.module.css"
 import { Board } from "./Board"
-import { isBoardEmpty } from "./utils"
+import { isBoardEmpty } from "../utils"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
 

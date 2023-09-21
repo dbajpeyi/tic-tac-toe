@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import {
   boardState,
   gameModeState,
@@ -7,9 +7,9 @@ import {
   variationState,
   vsModeSelected,
   vsModeState,
-} from "./slice"
-import { Mode, VSMode, Variation } from "./const"
-import { isBoardEmpty } from "./utils"
+} from "../slice"
+import { Mode, VSMode, Variation } from "../const"
+import { isBoardEmpty } from "../utils"
 
 interface DropDownProps {
   name: string

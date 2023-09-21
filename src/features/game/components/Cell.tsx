@@ -1,12 +1,12 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import {
   PlayerSymbol,
   currentPlayerState,
   movePlayed,
   variationState,
-} from "./slice"
-import styles from "./Game.module.css"
-import { Variation } from "./const"
+} from "../slice"
+import styles from "../Game.module.css"
+import { Variation } from "../const"
 
 interface CellProps {
   symbol: PlayerSymbol

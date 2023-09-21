@@ -1,6 +1,6 @@
-import { useAppSelector } from "../../app/hooks"
-import { boardState } from "./slice"
-import styles from "./Game.module.css"
+import { useAppSelector } from "../../../app/hooks"
+import { boardState } from "../slice"
+import styles from "../Game.module.css"
 import { Cell } from "./Cell"
 
 export interface BoardProps {
