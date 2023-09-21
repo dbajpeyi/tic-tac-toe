@@ -10,6 +10,7 @@ import {
 } from "../slice"
 import { Mode, VSMode, Variation } from "../const"
 import { isBoardEmpty } from "../utils"
+import styles from "../Game.module.css"
 
 interface DropDownProps {
   name: string
@@ -17,6 +18,11 @@ interface DropDownProps {
   defaultValue: string
   isDisabled: boolean
   onSelected: (value: string) => void
+}
+
+interface HintProps {
+  shouldShowVariationHint: boolean
+  shouldShowModeHint: boolean
 }
 
 export function DropDown({
@@ -38,6 +44,21 @@ export function DropDown({
         ))}
       </select>
     </>
+  )
+}
+
+function Hint({ shouldShowModeHint, shouldShowVariationHint }: HintProps) {
+  return (
+    <div>
+      {shouldShowVariationHint && (
+        <p className={styles.wildhint}>
+          Use left click for "X", and right for "O"
+        </p>
+      )}
+      {shouldShowModeHint && (
+        <p className={styles.miserehint}>Hint: try to loose ;) </p>
+      )}
+    </div>
   )
 }
 
@@ -80,28 +101,36 @@ export function Settings() {
     }
   }
   return (
-    <>
-      <DropDown
-        name={"Variation"}
-        optionValues={[Variation.Standard, Variation.Wild]}
-        defaultValue={variation}
-        isDisabled={!isBoardEmpty(board)}
-        onSelected={onVariationSelected}
-      />
-      <DropDown
-        name={"Mode"}
-        optionValues={[Mode.Regular, Mode.Misere]}
-        defaultValue={mode}
-        isDisabled={!isBoardEmpty(board)}
-        onSelected={onModeSelected}
-      />
-      <DropDown
-        name={"VS. mode"}
-        optionValues={[VSMode.Human, VSMode.Computer]}
-        defaultValue={vsMode}
-        isDisabled={!isBoardEmpty(board)}
-        onSelected={onVsModeSelected}
-      />
-    </>
+    <div>
+      <div className={styles.row}>
+        <DropDown
+          name={"Variation"}
+          optionValues={[Variation.Standard, Variation.Wild]}
+          defaultValue={variation}
+          isDisabled={!isBoardEmpty(board)}
+          onSelected={onVariationSelected}
+        />
+        <DropDown
+          name={"Mode"}
+          optionValues={[Mode.Regular, Mode.Misere]}
+          defaultValue={mode}
+          isDisabled={!isBoardEmpty(board)}
+          onSelected={onModeSelected}
+        />
+        <DropDown
+          name={"VS. mode"}
+          optionValues={[VSMode.Human, VSMode.Computer]}
+          defaultValue={vsMode}
+          isDisabled={!isBoardEmpty(board)}
+          onSelected={onVsModeSelected}
+        />
+      </div>
+      <div className={`${styles.row} ${styles.hint}`}>
+        <Hint
+          shouldShowModeHint={mode === Mode.Misere}
+          shouldShowVariationHint={variation === Variation.Wild}
+        />
+      </div>
+    </div>
   )
 }

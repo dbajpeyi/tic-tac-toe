@@ -1,14 +1,6 @@
 import { useAppSelector } from "../../../app/hooks"
-import {
-  GameStatus,
-  Player,
-  currentPlayerState,
-  gameModeState,
-  gameStatusState,
-  variationState,
-} from "../slice"
+import { Player, currentPlayerState } from "../slice"
 import styles from "../Game.module.css"
-import { Mode, Variation } from "../const"
 
 interface TurnTabItemProps {
   playerName: string
@@ -41,21 +33,10 @@ function TurnTab(currentPlayer: Player) {
 
 export function TurnInfo() {
   const currentPlayer = useAppSelector(currentPlayerState)
-  const gameStatus = useAppSelector(gameStatusState)
-  const mode = useAppSelector(gameModeState)
-  const variation = useAppSelector(variationState)
   return (
     <>
       <p className={styles.turninfo}>
         <TurnTab {...currentPlayer} />
-        {variation === Variation.Wild && (
-          <p className={styles.extrainfomisere}>
-            Use left click for "X", and right for "O"
-          </p>
-        )}
-        {mode === Mode.Misere && (
-          <p className={styles.extrainfowild}>Hint: try to loose ;) </p>
-        )}
       </p>
     </>
   )

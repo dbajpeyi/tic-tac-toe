@@ -44,16 +44,17 @@
   transition: all 0.3s ease 0s;
 }
 
-.extrainfowild {
-  position: relative;
-  top: 10px;
+.hint {
+  min-height: 65px;
+}
+
+.wildhint {
   font-size: 12px;
   font-weight: normal;
   color: firebrick;
 }
-.extrainfomisere {
-  position: relative;
-  top: 10px;
+
+.miserehint {
   width: 270px;
   font-size: 12px;
   font-weight: normal;
