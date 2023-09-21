@@ -16,14 +16,42 @@
   color: slategray;
 }
 
+.turntab {
+  display: flex;
+  font-weight: normal;
+  height: 40px;
+}
+
+.turntab > .turntabitem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 40px;
+  border-radius: 1px solid black;
+  /* padding: 0 20px 0 20px; */
+}
+
+.turntabitem.underlined {
+  color: firebrick;
+  border-bottom: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease 0s;
+  text-transform: uppercase;
+}
+
 .extrainfowild {
-  top: 20px;
+  position: relative;
+  top: 10px;
   font-size: 12px;
   font-weight: normal;
   color: firebrick;
 }
 .extrainfomisere {
-  width: 240px;
+  position: relative;
+  top: 10px;
+  width: 270px;
   font-size: 12px;
   font-weight: normal;
   color: firebrick;

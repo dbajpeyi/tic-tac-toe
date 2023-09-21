@@ -9,25 +9,34 @@ import {
 } from "./slice"
 import styles from "./Game.module.css"
 import { Mode, Variation } from "./const"
-import { getNextPlayer } from "./utils"
 
-export function getTurnInfoText(
-  currentPlayer: Player,
-  gameStatus: GameStatus,
-  mode: Mode,
-  variation: Variation,
-): string {
-  if (gameStatus === "in-progress") {
-    return `${currentPlayer.name}'s turn!`
-  } else if (gameStatus === "win") {
-    const winner =
-      mode === Mode.Regular
-        ? currentPlayer
-        : getNextPlayer(currentPlayer.name, variation)
-    return `${winner.name} won!`
-  } else {
-    return "It's a draw!"
-  }
+interface TurnTabItemProps {
+  playerName: string
+  isUnderlined: boolean
+}
+
+function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
+  return (
+    <div
+      className={`${styles.turntabitem} ${isUnderlined && styles.underlined}`}
+    >
+      {playerName}
+    </div>
+  )
+}
+
+function TurnTab(currentPlayer: Player) {
+  const playerNames = ["Player 1", "Player 2"]
+  return (
+    <div className={styles.turntab}>
+      {playerNames.map((name) => (
+        <TurnTabItem
+          playerName={name}
+          isUnderlined={currentPlayer.name === name}
+        />
+      ))}
+    </div>
+  )
 }
 
 export function TurnInfo() {
@@ -38,7 +47,7 @@ export function TurnInfo() {
   return (
     <>
       <p className={styles.turninfo}>
-        {getTurnInfoText(currentPlayer, gameStatus, mode, variation)}
+        <TurnTab {...currentPlayer} />
         {variation === Variation.Wild && (
           <p className={styles.extrainfomisere}>
             Use left click for "X", and right for "O"
