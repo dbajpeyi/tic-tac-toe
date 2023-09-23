@@ -1,8 +1,7 @@
-import { Variation } from "../const"
-import { Board, PlayerSymbol, getInitialBoard } from "../slice"
+import { Mode, VSMode, Variation } from "../const"
+import { Board, PlayerSymbol, getInitialBoard, getNextPlayer } from "../slice"
 import {
   getGameStatusWithAdjacentCells,
-  getNextPlayer,
   isBoardEmpty,
   isBoardFull,
 } from "../utils"
@@ -21,13 +20,23 @@ function createRandomFullBoard(): Board {
 describe("utils tests", () => {
   describe("getNextPlayer", () => {
     it("should return the next player with symbol in standard variation", () => {
-      const nextPlayer = getNextPlayer("Player 1", Variation.Standard)
-      expect(nextPlayer).toEqual({ name: "Player 2", symbol: "O" })
+      const nextPlayer = getNextPlayer(
+        "Player 1",
+        Variation.Standard,
+        Mode.Regular,
+        VSMode.Human,
+      )
+      expect(nextPlayer).toContain({ name: "Player 2", symbol: "O" })
     })
 
     it("return the next player without symbol in wild variation", () => {
-      const nextPlayer = getNextPlayer("Player 1", Variation.Wild)
-      expect(nextPlayer).toEqual({ name: "Player 2" })
+      const nextPlayer = getNextPlayer(
+        "Player 1",
+        Variation.Wild,
+        Mode.Regular,
+        VSMode.Human,
+      )
+      expect(nextPlayer).toContain({ name: "Player 2" })
     })
   })
 

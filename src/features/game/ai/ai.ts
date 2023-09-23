@@ -5,23 +5,6 @@ const MAX_EVALUATION = 10
 const MIN_EVALUATION = -10
 const DRAW_EVALUATION = 0
 
-// class Minimax {
-//   board: Board
-//   canPlayAnySymbol: boolean
-//   symbolToPlay?: "X" | "O"
-
-//   constructor(
-//     board: Board,
-//     canPlayAnySymbol: boolean,
-//     symbolToPlay?: "O" | "X",
-//   ) {
-//     this.board = { ...board }
-//     this.canPlayAnySymbol = canPlayAnySymbol
-//     this.symbolToPlay = symbolToPlay
-//   }
-
-// }
-
 function getNewBoardAfterMove(board: Board, move: Move): Board {
   return board.map((cell: Cell) =>
     cell.id === move.position.toString()
@@ -69,23 +52,20 @@ function minimax(
     return evaluate(gameStatus, isMaximizerTurn)
   } else {
     const moves = getAllPossibleMoves(board, canPlayAnySymbol, symbolToPlay)
-    if (isMaximizerTurn) {
-      let maxEvaluation = -Infinity
-      for (const move of moves) {
-        const newBoard = getNewBoardAfterMove(board, move)
-        const evaluation = minimax(newBoard, false, canPlayAnySymbol, depth + 1)
-        maxEvaluation = Math.max(evaluation, maxEvaluation)
-      }
-      return maxEvaluation
-    } else {
-      let minEvaluation = Infinity
-      for (const move of moves) {
-        const newBoard = getNewBoardAfterMove(board, move)
-        const evaluation = minimax(newBoard, true, canPlayAnySymbol, depth + 1)
-        minEvaluation = Math.max(evaluation, minEvaluation)
-      }
-      return minEvaluation
+    let bestEvaluation = isMaximizerTurn ? -Infinity : Infinity
+    for (const move of moves) {
+      const newBoard = getNewBoardAfterMove(board, move)
+      const evaluation = minimax(
+        newBoard,
+        !isMaximizerTurn,
+        canPlayAnySymbol,
+        depth + 1,
+      )
+      bestEvaluation = isMaximizerTurn
+        ? Math.max(evaluation, bestEvaluation)
+        : Math.min(evaluation, bestEvaluation)
     }
+    return bestEvaluation
   }
 }
 
@@ -102,7 +82,7 @@ export function nextMove(
     const newBoard = getNewBoardAfterMove(board, move)
     const evaluation = minimax(
       newBoard,
-      isMaximizer,
+      !isMaximizer,
       canPlayAnySymbol,
       0,
       symbolToPlay,

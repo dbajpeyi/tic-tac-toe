@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { BOARD_SIZE, Mode, VSMode, Variation } from "./const"
+import { BOARD_SIZE, Mode, PlayerType, VSMode, Variation } from "./const"
 import { RootState } from "../../app/store"
-import { getGameStatusWithAdjacentCells, getNextPlayer } from "./utils"
+import { getGameStatusWithAdjacentCells } from "./utils"
 
 export type PlayerSymbol = "X" | "O" | null
 export interface Cell {
@@ -58,6 +58,31 @@ export function getInitialState(): State {
   }
 }
 
+export function getNextPlayer(
+  currentPlayerName: "Player 1" | "Player 2",
+  variation: Variation,
+  mode: Mode,
+  vsMode: VSMode,
+): Player {
+  const isWild = variation === Variation.Wild
+  const isComputer = vsMode === VSMode.Computer
+  if (currentPlayerName === "Player 1") {
+    return {
+      name: "Player 2",
+      symbol: isWild ? undefined : "O",
+      type: isComputer ? PlayerType.AI : PlayerType.Human,
+      isMaximizer: mode !== Mode.Misere,
+    }
+  } else {
+    return {
+      name: "Player 1",
+      symbol: isWild ? undefined : "X",
+      type: isComputer ? PlayerType.AI : PlayerType.Human,
+      isMaximizer: mode !== Mode.Misere,
+    }
+  }
+}
+
 const initialState: State = getInitialState()
 
 const slice = createSlice({
@@ -84,6 +109,8 @@ const slice = createSlice({
         state.currentPlayer = getNextPlayer(
           state.currentPlayer.name,
           state.variation,
+          state.mode,
+          state.vsMode,
         )
       }
     },

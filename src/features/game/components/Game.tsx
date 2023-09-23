@@ -15,7 +15,7 @@ import { isBoardEmpty } from "../utils"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
 import { useEffect } from "react"
-import { Mode, PlayerType, Variation } from "../const"
+import { Mode, PlayerType, VSMode, Variation } from "../const"
 import { nextMove } from "../ai/ai"
 
 export function Game() {
@@ -27,22 +27,21 @@ export function Game() {
   const variation = useAppSelector(variationState)
 
   const dispatch = useAppDispatch()
-  // useEffect(() => {
-  //   console.log("Dispatching")
-  //   if (currentPlayer.name === "Player 2") {
-  //     const move = nextMove(
-  //       board,
-  //       variation === Variation.Wild,
-  //       mode === Mode.Misere,
-  //     )
-  //     console.log(move)
-  //     if (move === null) {
-  //       throw new Error("move cannot be null")
-  //     } else {
-  //       dispatch(movePlayed(move))
-  //     }
-  //   }
-  // }, [currentPlayer, vsMode])
+  useEffect(() => {
+    if (currentPlayer.name === "Player 2" && vsMode === VSMode.Computer) {
+      const move = nextMove(
+        board,
+        variation === Variation.Wild,
+        currentPlayer.isMaximizer!,
+        currentPlayer.symbol,
+      )
+      if (move === null) {
+        throw new Error("move cannot be null")
+      } else {
+        dispatch(movePlayed(move))
+      }
+    }
+  }, [currentPlayer])
 
   return (
     <>

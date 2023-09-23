@@ -1,4 +1,4 @@
-import { Variation, adjacentCellArrangement } from "./const"
+import { VSMode, Variation, adjacentCellArrangement } from "./const"
 import { Board, GameStatus, Player } from "./slice"
 
 export function isBoardEmpty(board: Board): boolean {
@@ -7,24 +7,6 @@ export function isBoardEmpty(board: Board): boolean {
 
 export function isBoardFull(board: Board): boolean {
   return board.every((cell) => cell.symbol !== null)
-}
-
-export function getNextPlayer(
-  currentPlayerName: "Player 1" | "Player 2",
-  variation: Variation,
-): Player {
-  const isWild = variation === Variation.Wild
-  if (currentPlayerName === "Player 1") {
-    return {
-      name: "Player 2",
-      symbol: isWild ? undefined : "O",
-    }
-  } else {
-    return {
-      name: "Player 1",
-      symbol: isWild ? undefined : "X",
-    }
-  }
 }
 
 export function getGameStatusWithAdjacentCells(board: Board): {
