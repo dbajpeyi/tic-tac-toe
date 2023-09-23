@@ -1,7 +1,7 @@
 import { Variation } from "../const"
 import { Board, PlayerSymbol, getInitialBoard } from "../slice"
 import {
-  getGameStatusWithWinningCells,
+  getGameStatusWithAdjacentCells,
   getNextPlayer,
   isBoardEmpty,
   isBoardFull,
@@ -58,22 +58,24 @@ describe("utils tests", () => {
     })
   })
 
-  describe("getGameStatusWithWinningCells", () => {
+  describe("getGameStatusWithadjacentCells", () => {
     it('should return "in-progress" status and no winning cells when board is in progress', () => {
       const board = getInitialBoard()
       board[0].symbol = "X"
-      const { gameStatus, winningCells } = getGameStatusWithWinningCells(board)
+      const { gameStatus, adjacentCells } =
+        getGameStatusWithAdjacentCells(board)
       expect(gameStatus).toBe("in-progress")
-      expect(winningCells).toBeUndefined()
+      expect(adjacentCells).toBeUndefined()
     })
 
     it('should return "win" status and winning cells when board is in winning state', () => {
       const board = getInitialBoard()
       const cellsPlayed = [0, 1, 2]
       cellsPlayed.forEach((cell) => (board[cell].symbol = "X"))
-      const { gameStatus, winningCells } = getGameStatusWithWinningCells(board)
+      const { gameStatus, adjacentCells } =
+        getGameStatusWithAdjacentCells(board)
       expect(gameStatus).toBe("win")
-      expect(winningCells).toEqual(cellsPlayed)
+      expect(adjacentCells).toEqual(cellsPlayed)
     })
 
     it('should return "draw" status and no winning cells when the board is in draw state', () => {
@@ -88,9 +90,10 @@ describe("utils tests", () => {
         { id: "7", symbol: "X" },
         { id: "8", symbol: "X" },
       ]
-      const { gameStatus, winningCells } = getGameStatusWithWinningCells(board)
+      const { gameStatus, adjacentCells } =
+        getGameStatusWithAdjacentCells(board)
       expect(gameStatus).toBe("draw")
-      expect(winningCells).toBeUndefined()
+      expect(adjacentCells).toBeUndefined()
     })
   })
 })

@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { BOARD_SIZE, Mode, VSMode, Variation } from "./const"
 import { RootState } from "../../app/store"
-import { getGameStatusWithWinningCells, getNextPlayer } from "./utils"
+import { getGameStatusWithAdjacentCells, getNextPlayer } from "./utils"
 
 export type PlayerSymbol = "X" | "O" | null
 export interface Cell {
@@ -9,15 +9,16 @@ export interface Cell {
   id: string
 }
 
-export type Board = Array<Cell>
+export type Board = Cell[]
 
 export interface Player {
-  symbol?: PlayerSymbol
   name: "Player 1" | "Player 2"
+  symbol?: PlayerSymbol
+  type?: PlayerType
+  isMaximizer?: boolean
 }
 
-interface Move {
-  player: Player
+export interface Move {
   symbol: PlayerSymbol
   position: number
 }
@@ -28,7 +29,7 @@ export interface State {
   board: Board
   currentPlayer: Player
   gameStatus: GameStatus
-  winningCells?: number[]
+  adjacentCells?: number[]
   mode: Mode
   variation: Variation
   vsMode: VSMode
@@ -74,11 +75,11 @@ const slice = createSlice({
         symbol: action.payload.symbol,
         id: position.toString(),
       }
-      const { gameStatus, winningCells } = getGameStatusWithWinningCells(
+      const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(
         state.board,
       )
       state.gameStatus = gameStatus
-      state.winningCells = winningCells
+      state.adjacentCells = adjacentCells
       if (gameStatus === "in-progress") {
         state.currentPlayer = getNextPlayer(
           state.currentPlayer.name,
@@ -89,7 +90,7 @@ const slice = createSlice({
     newGameStarted: (state) => {
       state.board = getInitialBoard()
       state.gameStatus = "in-progress"
-      state.winningCells = undefined
+      state.adjacentCells = undefined
       state.currentPlayer =
         state.variation === Variation.Standard
           ? getDefaultFirstPlayer()
@@ -122,7 +123,7 @@ export const {
 export const boardState = (state: RootState) => state.game.board
 export const currentPlayerState = (state: RootState) => state.game.currentPlayer
 export const gameStatusState = (state: RootState) => state.game.gameStatus
-export const winningCellsState = (state: RootState) => state.game.winningCells
+export const adjacentCellsState = (state: RootState) => state.game.adjacentCells
 export const gameModeState = (state: RootState) => state.game.mode
 export const variationState = (state: RootState) => state.game.variation
 export const vsModeState = (state: RootState) => state.game.vsMode

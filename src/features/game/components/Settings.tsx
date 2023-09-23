@@ -23,6 +23,7 @@ interface DropDownProps {
 interface HintProps {
   shouldShowVariationHint: boolean
   shouldShowModeHint: boolean
+  shouldShowAiHint: boolean
 }
 
 export function DropDown({
@@ -40,14 +41,20 @@ export function DropDown({
         disabled={isDisabled}
       >
         {optionValues.map((value) => (
-          <option selected={value === defaultValue}>{value}</option>
+          <option key={value} selected={value === defaultValue}>
+            {value}
+          </option>
         ))}
       </select>
     </>
   )
 }
 
-function Hint({ shouldShowModeHint, shouldShowVariationHint }: HintProps) {
+function Hint({
+  shouldShowModeHint,
+  shouldShowVariationHint,
+  shouldShowAiHint,
+}: HintProps) {
   return (
     <div>
       {shouldShowVariationHint && (
@@ -57,6 +64,11 @@ function Hint({ shouldShowModeHint, shouldShowVariationHint }: HintProps) {
       )}
       {shouldShowModeHint && (
         <p className={styles.miserehint}>Hint: try to loose ;) </p>
+      )}
+      {shouldShowAiHint && (
+        <p className={styles.miserehint}>
+          Start game or choose player (Player 1 always goes first){" "}
+        </p>
       )}
     </div>
   )
@@ -129,6 +141,7 @@ export function Settings() {
         <Hint
           shouldShowModeHint={mode === Mode.Misere}
           shouldShowVariationHint={variation === Variation.Wild}
+          shouldShowAiHint={vsMode === VSMode.Computer}
         />
       </div>
     </div>

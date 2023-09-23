@@ -25,7 +25,6 @@ describe("game reducer standard variation and regular mode", () => {
       const state1 = gameReducer(
         initialState,
         movePlayed({
-          player: getDefaultFirstPlayer(),
           position: movePosition,
           symbol: "X",
         }),
@@ -42,7 +41,6 @@ describe("game reducer standard variation and regular mode", () => {
       const actual = gameReducer(
         initialState,
         movePlayed({
-          player: getDefaultFirstPlayer(),
           position: movePosition,
           symbol: "X",
         }),
@@ -55,7 +53,6 @@ describe("game reducer standard variation and regular mode", () => {
       const actual = gameReducer(
         initialState,
         movePlayed({
-          player: getDefaultFirstPlayer(),
           position: movePosition,
           symbol: "X",
         }),
@@ -68,7 +65,6 @@ describe("game reducer standard variation and regular mode", () => {
       const state1 = gameReducer(
         initialState,
         movePlayed({
-          player: getDefaultFirstPlayer(),
           position: firstMovePosition,
           symbol: "X",
         }),
@@ -77,7 +73,6 @@ describe("game reducer standard variation and regular mode", () => {
       const state2 = gameReducer(
         state1,
         movePlayed({
-          player: getDefaultFirstPlayer(),
           position: firstMovePosition + 1,
           symbol: "X",
         }),
@@ -86,7 +81,6 @@ describe("game reducer standard variation and regular mode", () => {
       const state3 = gameReducer(
         state2,
         movePlayed({
-          player: { name: "Player 1" },
           position: firstMovePosition + 2,
           symbol: "X",
         }),
@@ -109,7 +103,6 @@ describe("game reducer standard variation and regular mode", () => {
       const state1 = gameReducer(
         initialState,
         movePlayed({
-          player: { name: "Player 1" },
           position: movePosition,
           symbol: "X",
         }),

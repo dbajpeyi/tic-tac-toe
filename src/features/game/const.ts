@@ -1,6 +1,6 @@
 export const BOARD_SIZE = 3
 
-export const winningCellArrangement = [
+export const adjacentCellArrangement = [
   // Row win
   [0, 1, 2],
   [3, 4, 5],
@@ -32,4 +32,9 @@ export enum Mode {
 export enum VSMode {
   Human = "2P",
   Computer = "AI",
+}
+
+export enum PlayerType {
+  AI = "ai",
+  Human = "human",
 }

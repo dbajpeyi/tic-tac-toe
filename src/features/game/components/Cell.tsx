@@ -23,7 +23,6 @@ export function Cell(props: CellProps) {
   const onCellClicked = (id: string, symbolPlayed: PlayerSymbol) => {
     dispatch(
       movePlayed({
-        player: currentPlayer,
         symbol: symbolPlayed,
         position: parseInt(id),
       }),
@@ -40,7 +39,7 @@ export function Cell(props: CellProps) {
         } else if (variation === Variation.Wild) {
           return onCellClicked(props.id, "X")
         } else {
-          throw Error(`Unhan`)
+          throw Error(`Unhandled variation: ${variation}`)
         }
       }}
       onContextMenu={(e) => {

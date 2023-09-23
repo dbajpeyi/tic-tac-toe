@@ -1,11 +1,11 @@
-import { Variation, winningCellArrangement } from "./const"
+import { Variation, adjacentCellArrangement } from "./const"
 import { Board, GameStatus, Player } from "./slice"
 
-export function isBoardEmpty(board: Board) {
+export function isBoardEmpty(board: Board): boolean {
   return board.every((cell) => cell.symbol === null)
 }
 
-export function isBoardFull(board: Board) {
+export function isBoardFull(board: Board): boolean {
   return board.every((cell) => cell.symbol !== null)
 }
 
@@ -27,11 +27,11 @@ export function getNextPlayer(
   }
 }
 
-export function getGameStatusWithWinningCells(board: Board): {
+export function getGameStatusWithAdjacentCells(board: Board): {
   gameStatus: GameStatus
-  winningCells?: number[]
+  adjacentCells?: number[]
 } {
-  const arrangement = winningCellArrangement
+  const arrangement = adjacentCellArrangement
     .flatMap((cells: number[]) => {
       return {
         item: cells.map((index: number) => board[index].symbol).join(""),
@@ -40,7 +40,7 @@ export function getGameStatusWithWinningCells(board: Board): {
     })
     .find(({ item, cells }) => item === "XXX" || item === "OOO")
   if (arrangement !== undefined) {
-    return { gameStatus: "win", winningCells: arrangement.cells }
+    return { gameStatus: "win", adjacentCells: arrangement.cells }
   } else if (isBoardFull(board)) {
     return { gameStatus: "draw" }
   } else {
