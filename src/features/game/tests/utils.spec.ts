@@ -1,5 +1,11 @@
 import { Mode, VSMode, Variation } from "../const"
-import { Board, PlayerSymbol, getInitialBoard, getNextPlayer } from "../slice"
+import {
+  Board,
+  PlayerSymbol,
+  getDefaultFirstPlayer,
+  getInitialBoard,
+  getNextPlayer,
+} from "../slice"
 import {
   getGameStatusWithAdjacentCells,
   isBoardEmpty,
@@ -21,22 +27,23 @@ describe("utils tests", () => {
   describe("getNextPlayer", () => {
     it("should return the next player with symbol in standard variation", () => {
       const nextPlayer = getNextPlayer(
-        "Player 1",
-        Variation.Standard,
-        Mode.Regular,
-        VSMode.Human,
+        getDefaultFirstPlayer(),
+        false,
+        false,
+        false,
       )
       expect(nextPlayer).toContain({ name: "Player 2", symbol: "O" })
     })
 
     it("return the next player without symbol in wild variation", () => {
       const nextPlayer = getNextPlayer(
-        "Player 1",
-        Variation.Wild,
-        Mode.Regular,
-        VSMode.Human,
+        getDefaultFirstPlayer(),
+        true,
+        false,
+        false,
       )
       expect(nextPlayer).toContain({ name: "Player 2" })
+      expect(nextPlayer.symbol).toBeUndefined()
     })
   })
 

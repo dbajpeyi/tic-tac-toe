@@ -94,10 +94,10 @@ export class Minimax {
 
   getOpponentPlayer(player: Player) {
     return getNextPlayer(
-      player.name,
-      this.#variation,
-      this.#mode,
-      VSMode.Computer,
+      player,
+      this.#variation === Variation.Wild,
+      this.#mode === Mode.Misere,
+      true,
     )
   }
 

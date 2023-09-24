@@ -1,4 +1,4 @@
-import { Mode, VSMode, Variation } from "../const"
+import { Mode, PlayerType, VSMode, Variation } from "../const"
 import gameReducer, {
   State,
   newGameStarted,
@@ -10,7 +10,7 @@ import gameReducer, {
   vsModeSelected,
 } from "../slice"
 
-describe("game reducer standard variation and regular mode", () => {
+describe("game reducer", () => {
   describe("standard variation and regular mode", () => {
     const initialState: State = getInitialState()
     it("should handle initial state", () => {
@@ -93,7 +93,7 @@ describe("game reducer standard variation and regular mode", () => {
     // Given an initial state with wild variation and misere mode
     const initialState: State = {
       ...getInitialState(),
-      currentPlayer: { name: "Player 1" },
+      currentPlayer: { name: "Player 1", type: PlayerType.Human },
       variation: Variation.Wild,
       mode: Mode.Misere,
     }
@@ -104,10 +104,10 @@ describe("game reducer standard variation and regular mode", () => {
         initialState,
         movePlayed({
           position: movePosition,
-          symbol: "X",
+          symbol: "O",
         }),
       )
-      expect(state1.board[movePosition].symbol).toBe("X")
+      expect(state1.board[movePosition].symbol).toBe("O")
       // And a new game is started
       const state2 = gameReducer(state1, newGameStarted())
 

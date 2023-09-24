@@ -14,7 +14,7 @@ export type Board = Cell[]
 export interface Player {
   name: "Player 1" | "Player 2"
   symbol?: PlayerSymbol
-  type?: PlayerType
+  type: PlayerType
   isMaximizer?: boolean
 }
 
@@ -44,7 +44,7 @@ export function getInitialBoard(): Board {
 }
 
 export function getDefaultFirstPlayer(): Player {
-  return { name: "Player 1", symbol: "X" }
+  return { name: "Player 1", symbol: "X", type: PlayerType.Human }
 }
 
 export function getInitialState(): State {
@@ -59,28 +59,23 @@ export function getInitialState(): State {
 }
 
 export function getNextPlayer(
-  currentPlayerName: "Player 1" | "Player 2",
-  variation: Variation,
-  mode: Mode,
-  vsMode: VSMode,
+  player: Player,
+  isWild: boolean,
+  isMisere: boolean,
+  isVsComputer: boolean,
 ): Player {
-  const isWild = variation === Variation.Wild
-  const isComputer = vsMode === VSMode.Computer
-  if (currentPlayerName === "Player 1") {
-    return {
-      name: "Player 2",
-      symbol: isWild ? undefined : "O",
-      type: isComputer ? PlayerType.AI : PlayerType.Human,
-      isMaximizer: true,
-    }
-  } else {
-    return {
-      name: "Player 1",
-      symbol: isWild ? undefined : "X",
-      type: isComputer ? PlayerType.AI : PlayerType.Human,
-      isMaximizer: false,
-    }
+  const nextPlayer: Player = {
+    name: player.name === "Player 1" ? "Player 2" : "Player 1",
+    symbol: isWild ? undefined : player.symbol === "O" ? "X" : "O",
+    type: isVsComputer
+      ? player.type === PlayerType.Human
+        ? PlayerType.AI
+        : PlayerType.Human
+      : PlayerType.Human,
+    isMaximizer:
+      player.isMaximizer != null && player.isMaximizer ? false : true,
   }
+  return nextPlayer
 }
 
 const initialState: State = getInitialState()
@@ -107,10 +102,10 @@ const slice = createSlice({
       state.adjacentCells = adjacentCells
       if (gameStatus === "in-progress") {
         state.currentPlayer = getNextPlayer(
-          state.currentPlayer.name,
-          state.variation,
-          state.mode,
-          state.vsMode,
+          state.currentPlayer,
+          state.variation === Variation.Wild,
+          state.mode === Mode.Misere,
+          state.vsMode === VSMode.Computer,
         )
       }
     },
@@ -121,13 +116,13 @@ const slice = createSlice({
       state.currentPlayer =
         state.variation === Variation.Standard
           ? getDefaultFirstPlayer()
-          : { name: "Player 1" }
+          : { name: "Player 1", type: PlayerType.Human }
     },
     variationSelected: (state, action: PayloadAction<Variation>) => {
       state.variation = action.payload
       state.currentPlayer =
         state.variation === Variation.Wild
-          ? { name: "Player 1" }
+          ? { name: "Player 1", type: PlayerType.Human }
           : getDefaultFirstPlayer()
     },
     modeSelected: (state, action: PayloadAction<Mode>) => {
