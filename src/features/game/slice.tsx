@@ -71,14 +71,14 @@ export function getNextPlayer(
       name: "Player 2",
       symbol: isWild ? undefined : "O",
       type: isComputer ? PlayerType.AI : PlayerType.Human,
-      isMaximizer: mode !== Mode.Misere,
+      isMaximizer: true,
     }
   } else {
     return {
       name: "Player 1",
       symbol: isWild ? undefined : "X",
       type: isComputer ? PlayerType.AI : PlayerType.Human,
-      isMaximizer: mode !== Mode.Misere,
+      isMaximizer: false,
     }
   }
 }

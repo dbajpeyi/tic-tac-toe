@@ -15,8 +15,8 @@ import { isBoardEmpty } from "../utils"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
 import { useEffect } from "react"
-import { Mode, PlayerType, VSMode, Variation } from "../const"
-import { nextMove } from "../ai/ai"
+import { VSMode } from "../const"
+import { Minimax } from "../ai/ai"
 
 export function Game() {
   const adjacentCells = useAppSelector(adjacentCellsState)
@@ -29,12 +29,11 @@ export function Game() {
   const dispatch = useAppDispatch()
   useEffect(() => {
     if (currentPlayer.name === "Player 2" && vsMode === VSMode.Computer) {
-      const move = nextMove(
-        board,
-        variation === Variation.Wild,
-        currentPlayer.isMaximizer!,
-        currentPlayer.symbol,
-      )
+      ;(window as any).minimax =
+        (window as any).minimax != null
+          ? (window as any).minimax
+          : new Minimax(currentPlayer, mode, variation)
+      const move = (window as any).minimax.nextMove(board)
       if (move === null) {
         throw new Error("move cannot be null")
       } else {
