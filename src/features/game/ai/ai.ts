@@ -3,12 +3,10 @@ import { Board, Cell, GameStatus, Move, Player, getNextPlayer } from "../slice"
 import { getGameStatusWithAdjacentCells } from "../utils"
 
 export class Minimax {
-  #currentPlayer: Player
   #mode: Mode
   #variation: Variation
 
-  constructor(currentPlayer: Player, mode: Mode, variation: Variation) {
-    this.#currentPlayer = currentPlayer
+  constructor(mode: Mode, variation: Variation) {
     this.#mode = mode
     this.#variation = variation
   }
@@ -37,15 +35,16 @@ export class Minimax {
     gameStatus: GameStatus,
     adjacentCells: number[],
     player: Player,
+    depth: number,
   ) {
     if (gameStatus === "win") {
       if (
         player.symbol! === board[adjacentCells[0]].symbol &&
         player.isMaximizer
       ) {
-        return 10
+        return 10 - depth
       } else {
-        return -10
+        return -10 + depth
       }
     } else {
       return 0
@@ -60,6 +59,7 @@ export class Minimax {
         gameStatus,
         adjacentCells!,
         this.getOpponentPlayer(player), // evaluate for opponent player as the move was already played
+        depth,
       )
     }
 
@@ -101,18 +101,15 @@ export class Minimax {
     )
   }
 
-  nextMove(board: Board): Move | null {
+  nextMove(board: Board, aiPlayer: Player): Move | null {
     let nextMove: Move | null = null
     let finalEvaluation = -Infinity
-    for (const move of this.getAllPossibleMoves(
-      board,
-      this.#currentPlayer.symbol!,
-    )) {
+    for (const move of this.getAllPossibleMoves(board, aiPlayer.symbol!)) {
       const newBoard = this.getNewBoardAfterMove(board, move)
       let evaluation = this.minimax(
         newBoard,
         0,
-        this.getOpponentPlayer(this.#currentPlayer),
+        this.getOpponentPlayer(aiPlayer),
       )
       if (evaluation > finalEvaluation) {
         finalEvaluation = evaluation

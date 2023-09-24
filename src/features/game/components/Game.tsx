@@ -29,11 +29,8 @@ export function Game() {
   const dispatch = useAppDispatch()
   useEffect(() => {
     if (currentPlayer.name === "Player 2" && vsMode === VSMode.Computer) {
-      ;(window as any).minimax =
-        (window as any).minimax != null
-          ? (window as any).minimax
-          : new Minimax(currentPlayer, mode, variation)
-      const move = (window as any).minimax.nextMove(board)
+      ;(window as any).minimax = new Minimax(mode, variation)
+      const move = (window as any).minimax.nextMove(board, currentPlayer)
       if (move === null) {
         throw new Error("move cannot be null")
       } else {

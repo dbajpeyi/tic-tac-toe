@@ -43,19 +43,45 @@ export function getInitialBoard(): Board {
   return board
 }
 
-export function getDefaultFirstPlayer(): Player {
-  return { name: "Player 1", symbol: "X", type: PlayerType.Human }
+export function getDefaultFirstPlayer(
+  isVsComputer: boolean,
+  isMisere: boolean,
+  isStandard: boolean,
+): Player {
+  const defaultPlayer: Player = {
+    name: "Player 1",
+    symbol: isStandard ? "X" : undefined,
+    type: PlayerType.Human,
+    isMaximizer: getIsMaximizer(isVsComputer, PlayerType.Human, isMisere),
+  }
+  return defaultPlayer
 }
 
 export function getInitialState(): State {
   return {
     board: getInitialBoard(),
-    currentPlayer: getDefaultFirstPlayer(),
+    currentPlayer: getDefaultFirstPlayer(false, false, true),
     gameStatus: "in-progress",
     mode: Mode.Regular,
     variation: Variation.Standard,
     vsMode: VSMode.Human,
   }
+}
+
+function getIsMaximizer(
+  isVsComputer: boolean,
+  playerType: PlayerType,
+  isMisere: boolean,
+) {
+  let isMaximizer = undefined
+  if (isVsComputer) {
+    if (playerType === PlayerType.Human) {
+      isMaximizer = isMisere ? true : false
+    } else {
+      isMaximizer = isMisere ? false : true
+    }
+  }
+  return isMaximizer
 }
 
 export function getNextPlayer(
@@ -64,16 +90,16 @@ export function getNextPlayer(
   isMisere: boolean,
   isVsComputer: boolean,
 ): Player {
+  const nextPlayerType = isVsComputer
+    ? player.type === PlayerType.Human
+      ? PlayerType.AI
+      : PlayerType.Human
+    : PlayerType.Human
   const nextPlayer: Player = {
     name: player.name === "Player 1" ? "Player 2" : "Player 1",
     symbol: isWild ? undefined : player.symbol === "O" ? "X" : "O",
-    type: isVsComputer
-      ? player.type === PlayerType.Human
-        ? PlayerType.AI
-        : PlayerType.Human
-      : PlayerType.Human,
-    isMaximizer:
-      player.isMaximizer != null && player.isMaximizer ? false : true,
+    type: nextPlayerType,
+    isMaximizer: getIsMaximizer(isVsComputer, nextPlayerType, isMisere),
   }
   return nextPlayer
 }
@@ -113,17 +139,14 @@ const slice = createSlice({
       state.board = getInitialBoard()
       state.gameStatus = "in-progress"
       state.adjacentCells = undefined
-      state.currentPlayer =
-        state.variation === Variation.Standard
-          ? getDefaultFirstPlayer()
-          : { name: "Player 1", type: PlayerType.Human }
+      state.currentPlayer = getDefaultFirstPlayer(
+        state.vsMode === VSMode.Computer,
+        state.mode === Mode.Misere,
+        state.variation === Variation.Standard,
+      )
     },
     variationSelected: (state, action: PayloadAction<Variation>) => {
       state.variation = action.payload
-      state.currentPlayer =
-        state.variation === Variation.Wild
-          ? { name: "Player 1", type: PlayerType.Human }
-          : getDefaultFirstPlayer()
     },
     modeSelected: (state, action: PayloadAction<Mode>) => {
       state.mode = action.payload
