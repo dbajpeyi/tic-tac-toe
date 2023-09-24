@@ -27,7 +27,7 @@ describe("utils tests", () => {
   describe("getNextPlayer", () => {
     it("should return the next player with symbol in standard variation", () => {
       const nextPlayer = getNextPlayer(
-        getDefaultFirstPlayer(),
+        getDefaultFirstPlayer(false, false, true),
         false,
         false,
         false,
@@ -37,7 +37,7 @@ describe("utils tests", () => {
 
     it("return the next player without symbol in wild variation", () => {
       const nextPlayer = getNextPlayer(
-        getDefaultFirstPlayer(),
+        getDefaultFirstPlayer(false, false, false),
         true,
         false,
         false,

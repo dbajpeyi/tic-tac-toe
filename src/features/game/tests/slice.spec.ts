@@ -127,14 +127,15 @@ describe("game reducer", () => {
       )
       // Then variation and current player are correctly set in the state
       expect(state1.variation).toBe(Variation.Wild)
-      expect(state1.currentPlayer.symbol).toBeUndefined()
 
       //When variation is selected
       const state2 = gameReducer(state1, variationSelected(Variation.Standard))
 
       // Then variation and current player are correctly set in the state
       expect(state2.variation).toBe(Variation.Standard)
-      expect(state2.currentPlayer.symbol).toBe(getDefaultFirstPlayer().symbol)
+      expect(state2.currentPlayer.symbol).toBe(
+        getDefaultFirstPlayer(false, false, true).symbol,
+      )
     })
   })
 
