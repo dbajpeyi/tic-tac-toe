@@ -51,7 +51,7 @@ export class Minimax {
     }
   }
 
-  minimax(board: Board, depth: number, player: Player) {
+  minimax(board: Board, depth: number, player: Player): number {
     const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(board)
     if (gameStatus === "win" || gameStatus === "draw") {
       return this.evaluate(
@@ -63,33 +63,20 @@ export class Minimax {
       )
     }
 
-    if (player.isMaximizer!) {
-      let finalEvaluation = -Infinity
-      const moves = this.getAllPossibleMoves(board, player.symbol!)
-      for (const move of moves) {
-        const newBoard = this.getNewBoardAfterMove(board, move)
-        const evaluation = this.minimax(
-          newBoard,
-          depth + 1,
-          this.getOpponentPlayer(player),
-        )
-        finalEvaluation = Math.max(evaluation, finalEvaluation)
-      }
-      return finalEvaluation
-    } else {
-      let finalEvaluation = Infinity
-      const moves = this.getAllPossibleMoves(board, player.symbol!)
-      for (const move of moves) {
-        const newBoard = this.getNewBoardAfterMove(board, move)
-        const evaluation = this.minimax(
-          newBoard,
-          depth + 1,
-          this.getOpponentPlayer(player),
-        )
-        finalEvaluation = Math.min(evaluation, finalEvaluation)
-      }
-      return finalEvaluation
+    let finalEvaluation = player.isMaximizer! ? -Infinity : Infinity
+    const moves = this.getAllPossibleMoves(board, player.symbol!)
+    for (const move of moves) {
+      const newBoard = this.getNewBoardAfterMove(board, move)
+      const evaluation = this.minimax(
+        newBoard,
+        depth + 1,
+        this.getOpponentPlayer(player),
+      )
+      finalEvaluation = player.isMaximizer!
+        ? Math.max(evaluation, finalEvaluation)
+        : Math.min(evaluation, finalEvaluation)
     }
+    return finalEvaluation
   }
 
   getOpponentPlayer(player: Player) {
