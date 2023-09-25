@@ -1,10 +1,18 @@
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { Player, currentPlayerState, vsModeState } from "../slice"
 import styles from "../Game.module.css"
-import { VSMode } from "../const"
+import { Mode, VSMode, Variation } from "../const"
+import {
+  Player,
+  PlayerName,
+  State,
+  currentPlayerState,
+  playerTurnChosen,
+} from "../slice"
+import { getNextPlayer, isBoardEmpty } from "../utils"
+import { RootState } from "../../../app/store"
 
 interface TurnTabItemProps {
-  playerName: string
+  playerName: PlayerName
   isUnderlined: boolean
 }
 
@@ -13,14 +21,33 @@ interface TurnTabProps {
 }
 
 function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
-  const vsMode = useAppSelector(vsModeState)
+  const { mode, variation, vsMode, currentPlayer, board } = useAppSelector(
+    (state: RootState) => state.game,
+  )
+
   const dispatch = useAppDispatch()
-  const isClickable = vsMode === VSMode.Computer
-  const handleClick = () => {}
+  const isClickable =
+    vsMode === VSMode.Computer &&
+    playerName !== currentPlayer.name &&
+    isBoardEmpty(board)
   return (
     <div
       className={`${styles.turntabitem} ${isUnderlined && styles.underlined}`}
-      onClick={isClickable ? () => handleClick() : undefined}
+      onClick={
+        isClickable
+          ? () =>
+              dispatch(
+                playerTurnChosen(
+                  getNextPlayer(
+                    currentPlayer,
+                    variation === Variation.Wild,
+                    mode === Mode.Misere,
+                    vsMode === VSMode.Computer,
+                  ),
+                ),
+              )
+          : undefined
+      }
     >
       {playerName}
     </div>
@@ -28,7 +55,7 @@ function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
 }
 
 function TurnTab({ currentPlayer }: TurnTabProps) {
-  const playerNames = ["Player 1", "Player 2"]
+  const playerNames: PlayerName[] = ["Player 1", "Player 2"]
   return (
     <div className={styles.turntab}>
       {playerNames.map((name) => (

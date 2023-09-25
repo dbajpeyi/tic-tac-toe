@@ -1,7 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { BOARD_SIZE, Mode, PlayerType, VSMode, Variation } from "./const"
 import { RootState } from "../../app/store"
-import { getGameStatusWithAdjacentCells } from "./utils"
+import {
+  getDefaultFirstPlayer,
+  getGameStatusWithAdjacentCells,
+  getNextPlayer,
+} from "./utils"
 
 export type PlayerSymbol = "X" | "O" | null
 export interface Cell {
@@ -10,9 +14,10 @@ export interface Cell {
 }
 
 export type Board = Cell[]
+export type PlayerName = "Player 1" | "Player 2"
 
 export interface Player {
-  name: "Player 1" | "Player 2"
+  name: PlayerName
   symbol?: PlayerSymbol
   type: PlayerType
   isMaximizer?: boolean
@@ -43,20 +48,6 @@ export function getInitialBoard(): Board {
   return board
 }
 
-export function getDefaultFirstPlayer(
-  isVsComputer: boolean,
-  isMisere: boolean,
-  isStandard: boolean,
-): Player {
-  const defaultPlayer: Player = {
-    name: "Player 1",
-    symbol: isStandard ? "X" : undefined,
-    type: PlayerType.Human,
-    isMaximizer: getIsMaximizer(isVsComputer, PlayerType.Human, isMisere),
-  }
-  return defaultPlayer
-}
-
 export function getInitialState(): State {
   return {
     board: getInitialBoard(),
@@ -66,42 +57,6 @@ export function getInitialState(): State {
     variation: Variation.Standard,
     vsMode: VSMode.Human,
   }
-}
-
-function getIsMaximizer(
-  isVsComputer: boolean,
-  playerType: PlayerType,
-  isMisere: boolean,
-) {
-  let isMaximizer = undefined
-  if (isVsComputer) {
-    if (playerType === PlayerType.Human) {
-      isMaximizer = isMisere ? true : false
-    } else {
-      isMaximizer = isMisere ? false : true
-    }
-  }
-  return isMaximizer
-}
-
-export function getNextPlayer(
-  player: Player,
-  isWild: boolean,
-  isMisere: boolean,
-  isVsComputer: boolean,
-): Player {
-  const nextPlayerType = isVsComputer
-    ? player.type === PlayerType.Human
-      ? PlayerType.AI
-      : PlayerType.Human
-    : PlayerType.Human
-  const nextPlayer: Player = {
-    name: player.name === "Player 1" ? "Player 2" : "Player 1",
-    symbol: isWild ? undefined : player.symbol === "O" ? "X" : "O",
-    type: nextPlayerType,
-    isMaximizer: getIsMaximizer(isVsComputer, nextPlayerType, isMisere),
-  }
-  return nextPlayer
 }
 
 const initialState: State = getInitialState()
@@ -154,6 +109,9 @@ const slice = createSlice({
     vsModeSelected: (state, action: PayloadAction<VSMode>) => {
       state.vsMode = action.payload
     },
+    playerTurnChosen: (state, action: PayloadAction<Player>) => {
+      state.currentPlayer = action.payload
+    },
   },
 })
 
@@ -163,6 +121,7 @@ export const {
   variationSelected,
   modeSelected,
   vsModeSelected,
+  playerTurnChosen,
 } = slice.actions
 
 export const boardState = (state: RootState) => state.game.board

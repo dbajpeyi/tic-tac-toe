@@ -1,13 +1,8 @@
-import { Mode, VSMode, Variation } from "../const"
+import { Board, PlayerSymbol, getInitialBoard } from "../slice"
 import {
-  Board,
-  PlayerSymbol,
   getDefaultFirstPlayer,
-  getInitialBoard,
-  getNextPlayer,
-} from "../slice"
-import {
   getGameStatusWithAdjacentCells,
+  getNextPlayer,
   isBoardEmpty,
   isBoardFull,
 } from "../utils"

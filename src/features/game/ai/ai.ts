@@ -1,29 +1,20 @@
-import { Mode, Variation } from "../const"
-import {
-  Board,
-  Cell,
-  GameStatus,
-  Move,
-  Player,
-  PlayerSymbol,
-  getNextPlayer,
-} from "../slice"
-import { getGameStatusWithAdjacentCells } from "../utils"
+import { Board, Cell, GameStatus, Move, Player, PlayerSymbol } from "../slice"
+import { getGameStatusWithAdjacentCells, getNextPlayer } from "../utils"
 
 const MAX_EVALUATION_SCORE = 10
 const MIN_EVALUATION_SCORE = -10
 const DRAW_EVALUATION_SCORE = 0
 
 export class Minimax {
-  #mode: Mode
-  #variation: Variation
+  #isMisere: boolean
+  #isWild: boolean
 
-  constructor(mode: Mode, variation: Variation) {
-    this.#mode = mode
-    this.#variation = variation
+  constructor(isMisere: boolean, isWild: boolean) {
+    this.#isMisere = isMisere
+    this.#isWild = isWild
   }
 
-  getNewBoardAfterMove(board: Board, move: Move): Board {
+  #getNewBoardAfterMove(board: Board, move: Move): Board {
     return board.map((cell: Cell) =>
       cell.id === move.position.toString()
         ? { ...cell, symbol: move.symbol }
@@ -31,7 +22,7 @@ export class Minimax {
     )
   }
 
-  getAllPossibleMoves(board: Board, symbol: PlayerSymbol): Move[] {
+  #getAllPossibleMoves(board: Board, symbol: PlayerSymbol): Move[] {
     return board
       .filter((cell) => cell.symbol === null)
       .flatMap((emptyCell: Cell) => {
@@ -46,7 +37,7 @@ export class Minimax {
       })
   }
 
-  evaluate(gameStatus: GameStatus, player: Player, depth: number): number {
+  #evaluate(gameStatus: GameStatus, player: Player, depth: number): number {
     if (gameStatus === "win") {
       return player.isMaximizer!
         ? MAX_EVALUATION_SCORE - depth
@@ -56,53 +47,78 @@ export class Minimax {
     }
   }
 
-  minimax(board: Board, depth: number, player: Player): number {
-    const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(board)
+  #minimax(
+    board: Board,
+    depth: number,
+    player: Player,
+    alpha: number,
+    beta: number,
+  ): number {
+    const gameStatus = getGameStatusWithAdjacentCells(board).gameStatus
     if (gameStatus === "win" || gameStatus === "draw") {
-      return this.evaluate(
+      return this.#evaluate(
         gameStatus,
-        this.getOpponentPlayer(player), // evaluate for opponent player as the move was already played
+        this.#getOpponentPlayer(player), // evaluate for opponent player as the move was already played
         depth,
       )
     }
 
-    let finalEvaluation = player.isMaximizer! ? -Infinity : Infinity
-    const moves = this.getAllPossibleMoves(board, player.symbol ?? null)
-    for (const move of moves) {
-      const newBoard = this.getNewBoardAfterMove(board, move)
-      const evaluation = this.minimax(
-        newBoard,
-        depth + 1,
-        this.getOpponentPlayer(player),
-      )
-      finalEvaluation = player.isMaximizer!
-        ? Math.max(evaluation, finalEvaluation)
-        : Math.min(evaluation, finalEvaluation)
+    const moves = this.#getAllPossibleMoves(board, player.symbol ?? null)
+    if (player.isMaximizer!) {
+      let finalEvaluation = -Infinity
+      for (const move of moves) {
+        const newBoard = this.#getNewBoardAfterMove(board, move)
+        const evaluation = this.#minimax(
+          newBoard,
+          depth + 1,
+          this.#getOpponentPlayer(player),
+          alpha,
+          beta,
+        )
+        finalEvaluation = Math.max(evaluation, finalEvaluation)
+        alpha = Math.max(alpha, finalEvaluation)
+        if (beta <= alpha) {
+          break
+        }
+      }
+      return finalEvaluation
+    } else {
+      let finalEvaluation = Infinity
+      for (const move of moves) {
+        const newBoard = this.#getNewBoardAfterMove(board, move)
+        const evaluation = this.#minimax(
+          newBoard,
+          depth + 1,
+          this.#getOpponentPlayer(player),
+          alpha,
+          beta,
+        )
+        finalEvaluation = Math.min(evaluation, finalEvaluation)
+        beta = Math.min(beta, finalEvaluation)
+        if (beta <= alpha) {
+          break
+        }
+      }
+      return finalEvaluation
     }
-    return finalEvaluation
   }
 
-  getOpponentPlayer(player: Player) {
-    return getNextPlayer(
-      player,
-      this.#variation === Variation.Wild,
-      this.#mode === Mode.Misere,
-      true,
-    )
+  #getOpponentPlayer(player: Player): Player {
+    return getNextPlayer(player, this.#isWild, this.#isMisere, true)
   }
 
   nextMove(board: Board, aiPlayer: Player): Move | null {
     let bestMove: Move | null = null
     let finalEvaluation = -Infinity
-    for (const move of this.getAllPossibleMoves(
-      board,
-      aiPlayer.symbol ?? null,
-    )) {
-      const newBoard = this.getNewBoardAfterMove(board, move)
-      let evaluation = this.minimax(
+    const moves = this.#getAllPossibleMoves(board, aiPlayer.symbol ?? null)
+    for (const move of moves) {
+      const newBoard = this.#getNewBoardAfterMove(board, move)
+      let evaluation = this.#minimax(
         newBoard,
         0,
-        this.getOpponentPlayer(aiPlayer),
+        this.#getOpponentPlayer(aiPlayer),
+        -Infinity,
+        Infinity,
       )
       if (evaluation > finalEvaluation) {
         finalEvaluation = evaluation

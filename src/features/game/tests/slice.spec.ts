@@ -4,11 +4,11 @@ import gameReducer, {
   newGameStarted,
   getInitialState,
   movePlayed,
-  getDefaultFirstPlayer,
   variationSelected,
   modeSelected,
   vsModeSelected,
 } from "../slice"
+import { getDefaultFirstPlayer } from "../utils"
 
 describe("game reducer", () => {
   describe("standard variation and regular mode", () => {
