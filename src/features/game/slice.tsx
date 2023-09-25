@@ -1,5 +1,12 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { BOARD_SIZE, Mode, PlayerType, VSMode, Variation } from "./const"
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import {
+  BOARD_SIZE,
+  Mode,
+  PlayerType,
+  RESULT_DISPLAY_SLEEP_DURATION_MS,
+  VSMode,
+  Variation,
+} from "./const"
 import { RootState } from "../../app/store"
 import {
   getDefaultFirstPlayer,
@@ -38,6 +45,7 @@ export interface State {
   mode: Mode
   variation: Variation
   vsMode: VSMode
+  shouldShowResult: boolean
 }
 
 export function getInitialBoard(): Board {
@@ -56,10 +64,17 @@ export function getInitialState(): State {
     mode: Mode.Regular,
     variation: Variation.Standard,
     vsMode: VSMode.Human,
+    shouldShowResult: false,
   }
 }
 
 const initialState: State = getInitialState()
+
+export const gameEnded = createAsyncThunk("game/gameEnded", async () => {
+  const delay = (timeMs: number) =>
+    new Promise((resolve) => setTimeout(resolve, timeMs))
+  const response = await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
+})
 
 const slice = createSlice({
   name: "game",
@@ -94,6 +109,7 @@ const slice = createSlice({
       state.board = getInitialBoard()
       state.gameStatus = "in-progress"
       state.adjacentCells = undefined
+      state.shouldShowResult = false
       state.currentPlayer = getDefaultFirstPlayer(
         state.vsMode === VSMode.Computer,
         state.mode === Mode.Misere,
@@ -112,6 +128,11 @@ const slice = createSlice({
     playerTurnChosen: (state, action: PayloadAction<Player>) => {
       state.currentPlayer = action.payload
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(gameEnded.fulfilled, (state) => {
+      state.shouldShowResult = true
+    })
   },
 })
 

@@ -19,6 +19,8 @@ export const adjacentCellArrangement = [
   [2, 4, 6],
 ]
 
+export const RESULT_DISPLAY_SLEEP_DURATION_MS = 600
+
 export enum Variation {
   Standard = "Standard",
   Wild = "Wild",

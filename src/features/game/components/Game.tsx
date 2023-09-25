@@ -1,5 +1,11 @@
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { newGameStarted, movePlayed, State, gameStatusState } from "../slice"
+import {
+  newGameStarted,
+  movePlayed,
+  State,
+  gameStatusState,
+  gameEnded,
+} from "../slice"
 import styles from "../Game.module.css"
 import { Board } from "./Board"
 import { isBoardEmpty, isBoardFull } from "../utils"
@@ -8,6 +14,7 @@ import { TurnInfo } from "./TurnInfo"
 import { useEffect } from "react"
 import { Mode, VSMode, Variation } from "../const"
 import { Minimax } from "../ai/ai"
+import { Result } from "./Result"
 
 export function Game() {
   const {
@@ -18,6 +25,7 @@ export function Game() {
     currentPlayer,
     board,
     gameStatus,
+    shouldShowResult,
   } = useAppSelector((state) => state.game)
   const dispatch = useAppDispatch()
   useEffect(() => {
@@ -39,6 +47,14 @@ export function Game() {
     }
   })
 
+  const hasGameEnded = gameStatus === "win" || gameStatus === "draw"
+
+  useEffect(() => {
+    if (hasGameEnded && !shouldShowResult) {
+      dispatch(gameEnded())
+    }
+  })
+
   return (
     <>
       <div className={styles.row}>
@@ -48,16 +64,22 @@ export function Game() {
         <TurnInfo />
       </div>
       <div className={styles.row}>
-        <Board cellsToHighlight={adjacentCells} />
+        {shouldShowResult ? (
+          <Result isWin={gameStatus === "win"} />
+        ) : (
+          <Board cellsToHighlight={adjacentCells} />
+        )}
       </div>
       <div className={styles.row}>
-        <button
-          className={styles.button}
-          onClick={() => dispatch(newGameStarted())}
-          disabled={isBoardEmpty(board)}
-        >
-          New game
-        </button>
+        {shouldShowResult && (
+          <button
+            className={styles.button}
+            onClick={() => dispatch(newGameStarted())}
+            disabled={isBoardEmpty(board)}
+          >
+            New game
+          </button>
+        )}
       </div>
     </>
   )

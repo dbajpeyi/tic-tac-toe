@@ -44,8 +44,13 @@
   transition: all 0.3s ease 0s;
 }
 
-.hint {
-  /* min-height: 65px; */
+.result {
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: gray;
+  height: 255px;
 }
 
 .wildhint {
@@ -60,6 +65,7 @@
   font-weight: normal;
   color: firebrick;
 }
+
 .grid {
   display: grid;
   gap: 2px;
