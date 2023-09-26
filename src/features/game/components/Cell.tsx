@@ -7,6 +7,7 @@ import {
 } from "../slice"
 import styles from "../Game.module.css"
 import { Variation } from "../const"
+import { RootState } from "../../../app/store"
 
 interface CellProps {
   symbol: PlayerSymbol
@@ -16,9 +17,10 @@ interface CellProps {
 }
 
 export function Cell(props: CellProps) {
+  const { currentPlayer, variation } = useAppSelector(
+    (state: RootState) => state.game,
+  )
   const dispatch = useAppDispatch()
-  const currentPlayer = useAppSelector(currentPlayerState)
-  const variation = useAppSelector(variationState)
 
   const onCellClicked = (id: string, symbolPlayed: PlayerSymbol) => {
     dispatch(

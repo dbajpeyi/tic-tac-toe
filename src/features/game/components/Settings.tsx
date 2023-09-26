@@ -11,6 +11,7 @@ import {
 import { Mode, VSMode, Variation } from "../const"
 import { isBoardEmpty } from "../utils"
 import styles from "../Game.module.css"
+import { RootState } from "../../../app/store"
 
 interface DropDownProps {
   name: string
@@ -75,10 +76,9 @@ function Hint({
 }
 
 export function Settings() {
-  const board = useAppSelector(boardState)
-  const variation = useAppSelector(variationState)
-  const mode = useAppSelector(gameModeState)
-  const vsMode = useAppSelector(vsModeState)
+  const { board, variation, mode, vsMode } = useAppSelector(
+    (state: RootState) => state.game,
+  )
   const dispatch = useAppDispatch()
 
   const onVariationSelected = (value: string) => {

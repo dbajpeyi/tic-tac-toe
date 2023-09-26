@@ -2,13 +2,14 @@ import { useAppSelector } from "../../../app/hooks"
 import { boardState } from "../slice"
 import styles from "../Game.module.css"
 import { Cell } from "./Cell"
+import { RootState } from "../../../app/store"
 
 export interface BoardProps {
   cellsToHighlight?: number[]
 }
 
 export function Board(props: BoardProps) {
-  const board = useAppSelector(boardState)
+  const { board } = useAppSelector((state: RootState) => state.game)
   return (
     <div className={styles.grid}>
       {board.map((item) => {
