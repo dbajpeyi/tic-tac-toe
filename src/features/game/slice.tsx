@@ -2,7 +2,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import {
   BOARD_SIZE,
   Mode,
-  PlayerType,
   RESULT_DISPLAY_SLEEP_DURATION_MS,
   VSMode,
   Variation,
@@ -13,29 +12,6 @@ import {
   getGameStatusWithAdjacentCells,
   getNextPlayer,
 } from "./utils"
-
-export type PlayerSymbol = "X" | "O" | null
-export interface Cell {
-  symbol: PlayerSymbol
-  id: string
-}
-
-export type Board = Cell[]
-export type PlayerName = "Player 1" | "Player 2"
-
-export interface Player {
-  name: PlayerName
-  symbol?: PlayerSymbol
-  type: PlayerType
-  isMaximizer?: boolean
-}
-
-export interface Move {
-  symbol: PlayerSymbol
-  position: number
-}
-
-export type GameStatus = "in-progress" | "win" | "draw"
 
 export interface State {
   board: Board
@@ -73,7 +49,7 @@ const initialState: State = getInitialState()
 export const gameEnded = createAsyncThunk("game/gameEnded", async () => {
   const delay = (timeMs: number) =>
     new Promise((resolve) => setTimeout(resolve, timeMs))
-  const response = await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
+  await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
 })
 
 const slice = createSlice({

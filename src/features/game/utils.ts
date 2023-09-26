@@ -1,5 +1,4 @@
 import { PlayerType, adjacentCellArrangement } from "./const"
-import { Board, GameStatus, Player } from "./slice"
 
 export function isBoardEmpty(board: Board): boolean {
   return board.every((cell) => cell.symbol === null)

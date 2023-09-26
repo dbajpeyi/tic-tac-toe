@@ -1,4 +1,4 @@
-import { Board, PlayerSymbol, getInitialBoard } from "../slice"
+import { getInitialBoard } from "../slice"
 import {
   getDefaultFirstPlayer,
   getGameStatusWithAdjacentCells,

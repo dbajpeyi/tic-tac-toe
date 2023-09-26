@@ -1,4 +1,3 @@
-import { Board, Cell, GameStatus, Move, Player, PlayerSymbol } from "../slice"
 import { getGameStatusWithAdjacentCells, getNextPlayer } from "../utils"
 
 const MAX_EVALUATION_SCORE = 10

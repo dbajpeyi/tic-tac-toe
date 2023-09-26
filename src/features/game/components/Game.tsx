@@ -1,20 +1,14 @@
+import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import {
-  newGameStarted,
-  movePlayed,
-  State,
-  gameStatusState,
-  gameEnded,
-} from "../slice"
 import styles from "../Game.module.css"
+import { Minimax } from "../ai/ai"
+import { Mode, VSMode, Variation } from "../const"
+import { gameEnded, movePlayed, newGameStarted } from "../slice"
+import { isBoardEmpty } from "../utils"
 import { Board } from "./Board"
-import { isBoardEmpty, isBoardFull } from "../utils"
+import { Result } from "./Result"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
-import { useEffect } from "react"
-import { Mode, VSMode, Variation } from "../const"
-import { Minimax } from "../ai/ai"
-import { Result } from "./Result"
 
 export function Game() {
   const {

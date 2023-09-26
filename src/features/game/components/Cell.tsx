@@ -1,10 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import {
-  PlayerSymbol,
-  currentPlayerState,
-  movePlayed,
-  variationState,
-} from "../slice"
+import { movePlayed } from "../slice"
 import styles from "../Game.module.css"
 import { Variation } from "../const"
 import { RootState } from "../../../app/store"
