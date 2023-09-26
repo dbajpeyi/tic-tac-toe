@@ -55,6 +55,14 @@
   height: 255px;
 }
 
+.result > span:first-child {
+  white-space: pre;
+}
+
+.result > span:nth-child(2) {
+  color: coral;
+}
+
 .wildhint {
   font-size: 12px;
   font-weight: normal;

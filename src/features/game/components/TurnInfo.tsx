@@ -4,7 +4,6 @@ import { Mode, VSMode, Variation } from "../const"
 import {
   Player,
   PlayerName,
-  State,
   currentPlayerState,
   playerTurnChosen,
 } from "../slice"
