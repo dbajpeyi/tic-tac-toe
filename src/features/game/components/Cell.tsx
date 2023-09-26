@@ -3,6 +3,8 @@ import { movePlayed } from "../slice"
 import styles from "../Game.module.css"
 import { Variation } from "../const"
 import { RootState } from "../../../app/store"
+import XSymbol from "../assets/svg/x.svg?react"
+import OSymbol from "../assets/svg/o.svg?react"
 
 interface CellProps {
   symbol: PlayerSymbol
@@ -26,6 +28,17 @@ export function Cell(props: CellProps) {
     )
   }
 
+  const getSymbolSVG = (symbol: PlayerSymbol): JSX.Element | null => {
+    switch (symbol) {
+      case "X":
+        return <XSymbol />
+      case "O":
+        return <OSymbol />
+      default:
+        return null
+    }
+  }
+
   return (
     <div
       style={{ pointerEvents: props.isDisabled ? "none" : "auto" }}
@@ -46,7 +59,7 @@ export function Cell(props: CellProps) {
         }
       }}
     >
-      {props.symbol}
+      {getSymbolSVG(props.symbol)}
     </div>
   )
 }
