@@ -98,7 +98,7 @@ export function Settings() {
     switch (value) {
       case "2P":
         return dispatch(vsModeSelected(VSMode.Human))
-      case "AI":
+      case "vs. Computer":
         return dispatch(vsModeSelected(VSMode.AI))
       default:
         throw new Error(`${value} is not a valid versus mode!`)
