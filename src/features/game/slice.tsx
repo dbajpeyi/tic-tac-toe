@@ -1,4 +1,9 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import {
+  Draft,
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit"
 import {
   Mode,
   RESULT_DISPLAY_SLEEP_DURATION_MS,
@@ -45,6 +50,27 @@ const delay = (timeMs: number) =>
     setTimeout(resolve, timeMs)
   })
 
+function updateStateOnMove(state: Draft<State>, move: Move) {
+  const { position, symbol } = move
+  state.board[position] = {
+    symbol: symbol,
+    id: position.toString(),
+  }
+  const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(
+    state.board,
+  )
+  state.gameStatus = gameStatus
+  state.adjacentCells = adjacentCells
+  if (gameStatus === "in-progress") {
+    state.currentPlayer = getNextPlayer(
+      state.currentPlayer,
+      state.variation === Variation.Wild,
+      state.mode === Mode.Misere,
+      state.vsMode === VSMode.AI,
+    )
+  }
+}
+
 export const endGame = createAsyncThunk("game/endGame", async () => {
   await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
 })
@@ -83,29 +109,12 @@ const slice = createSlice({
   initialState,
   reducers: {
     movePlayed: (state, action: PayloadAction<Move>) => {
-      const position = action.payload.position
       /* 
         Since we're using RTK's Immer here, modifying state directly is ok
         Actually it doesn't really mutate the state, just syntactic sugar to reduce
         boilerplate.
       */
-      state.board[position] = {
-        symbol: action.payload.symbol,
-        id: position.toString(),
-      }
-      const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(
-        state.board,
-      )
-      state.gameStatus = gameStatus
-      state.adjacentCells = adjacentCells
-      if (gameStatus === "in-progress") {
-        state.currentPlayer = getNextPlayer(
-          state.currentPlayer,
-          state.variation === Variation.Wild,
-          state.mode === Mode.Misere,
-          state.vsMode === VSMode.AI,
-        )
-      }
+      updateStateOnMove(state, action.payload)
     },
     newGameStarted: (state) => {
       state.board = getEmptyBoard()
@@ -131,24 +140,7 @@ const slice = createSlice({
       state.currentPlayer = action.payload
     },
     moveFromAiReceived: (state, action: PayloadAction<Move>) => {
-      const { position, symbol } = action.payload
-      state.board[position] = {
-        id: position.toString(),
-        symbol: symbol,
-      }
-      const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(
-        state.board,
-      )
-      state.gameStatus = gameStatus
-      state.adjacentCells = adjacentCells
-      if (gameStatus === "in-progress") {
-        state.currentPlayer = getNextPlayer(
-          state.currentPlayer,
-          state.variation === Variation.Wild,
-          state.mode === Mode.Misere,
-          state.vsMode === VSMode.AI,
-        )
-      }
+      updateStateOnMove(state, action.payload)
       state.isAiThinking = false
     },
   },
