@@ -28,8 +28,10 @@ export function Game() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(initWorkerIfNeeded())
-  })
+    if (vsMode === VSMode.AI) {
+      dispatch(initWorkerIfNeeded())
+    }
+  }, [vsMode])
 
   useEffect(() => {
     if (
@@ -40,7 +42,7 @@ export function Game() {
     ) {
       dispatch(playAiMove())
     }
-  })
+  }, [currentPlayer])
 
   useEffect(() => {
     if (hasGameEnded && !shouldShowResult) {

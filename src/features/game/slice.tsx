@@ -69,8 +69,11 @@ export const initWorkerIfNeeded = createAsyncThunk(
   async (_, { dispatch }) => {
     window.aiWorker =
       window.aiWorker ?? new Worker(aiWorkerUrl, { type: "module" })
-    window.aiWorker.onmessage = function (e: MessageEvent<Move>) {
+    window.aiWorker.onmessage = (e: MessageEvent<Move>) => {
       dispatch(moveFromAiReceived(e.data))
+    }
+    window.aiWorker.onerror = (e: ErrorEvent) => {
+      throw new Error(`aiWorker threw an error ${e.message}`)
     }
   },
 )
