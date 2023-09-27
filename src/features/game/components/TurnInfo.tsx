@@ -21,7 +21,7 @@ function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
 
   const dispatch = useAppDispatch()
   const isClickable =
-    vsMode === VSMode.Computer &&
+    vsMode === VSMode.AI &&
     playerName !== currentPlayer.name &&
     isBoardEmpty(board)
   return (
@@ -36,7 +36,7 @@ function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
                     currentPlayer,
                     variation === Variation.Wild,
                     mode === Mode.Misere,
-                    vsMode === VSMode.Computer,
+                    vsMode === VSMode.AI,
                   ),
                 ),
               )

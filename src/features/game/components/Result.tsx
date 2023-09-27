@@ -16,7 +16,7 @@ export function Result({ isWin }: ResultProps) {
     currentPlayer,
     variation === Variation.Wild,
     mode === Mode.Misere,
-    vsMode === VSMode.Computer,
+    vsMode === VSMode.AI,
   )
 
   const winnerPlayer: Player | null = isWin

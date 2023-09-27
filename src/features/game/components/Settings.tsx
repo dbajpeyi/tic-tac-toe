@@ -99,7 +99,7 @@ export function Settings() {
       case "2P":
         return dispatch(vsModeSelected(VSMode.Human))
       case "AI":
-        return dispatch(vsModeSelected(VSMode.Computer))
+        return dispatch(vsModeSelected(VSMode.AI))
       default:
         throw new Error(`${value} is not a valid versus mode!`)
     }
@@ -123,7 +123,7 @@ export function Settings() {
         />
         <DropDown
           name={"VS. mode"}
-          optionValues={[VSMode.Human, VSMode.Computer]}
+          optionValues={[VSMode.Human, VSMode.AI]}
           defaultValue={vsMode}
           isDisabled={!isBoardEmpty(board)}
           onSelected={onVsModeSelected}
@@ -133,7 +133,7 @@ export function Settings() {
         <Hint
           shouldShowModeHint={mode === Mode.Misere}
           shouldShowVariationHint={variation === Variation.Wild}
-          shouldShowAiHint={vsMode === VSMode.Computer}
+          shouldShowAiHint={vsMode === VSMode.AI}
         />
       </div>
     </div>

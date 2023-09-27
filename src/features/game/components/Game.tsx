@@ -25,7 +25,7 @@ export function Game() {
   useEffect(() => {
     if (
       currentPlayer.name === "Player 2" &&
-      vsMode === VSMode.Computer &&
+      vsMode === VSMode.AI &&
       gameStatus === "in-progress"
     ) {
       ;(window as any).minimax = new Minimax(

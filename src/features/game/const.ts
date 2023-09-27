@@ -33,7 +33,7 @@ export enum Mode {
 
 export enum VSMode {
   Human = "2P",
-  Computer = "AI",
+  AI = "vs. Computer",
 }
 
 export enum PlayerType {

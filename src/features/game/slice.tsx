@@ -77,7 +77,7 @@ const slice = createSlice({
           state.currentPlayer,
           state.variation === Variation.Wild,
           state.mode === Mode.Misere,
-          state.vsMode === VSMode.Computer,
+          state.vsMode === VSMode.AI,
         )
       }
     },
@@ -87,7 +87,7 @@ const slice = createSlice({
       state.adjacentCells = undefined
       state.shouldShowResult = false
       state.currentPlayer = getDefaultFirstPlayer(
-        state.vsMode === VSMode.Computer,
+        state.vsMode === VSMode.AI,
         state.mode === Mode.Misere,
         state.variation === Variation.Standard,
       )

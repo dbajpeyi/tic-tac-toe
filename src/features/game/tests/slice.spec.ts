@@ -152,8 +152,8 @@ describe("game reducer", () => {
     // Given default initial state
     const initialState: State = getInitialState()
     // When vsMode is selected
-    const state1 = gameReducer(initialState, vsModeSelected(VSMode.Computer))
+    const state1 = gameReducer(initialState, vsModeSelected(VSMode.AI))
     // Then the vsMode is correctly set in the state
-    expect(state1.vsMode).toBe(VSMode.Computer)
+    expect(state1.vsMode).toBe(VSMode.AI)
   })
 })
