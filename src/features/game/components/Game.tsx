@@ -29,8 +29,8 @@ export function Game() {
       gameStatus === "in-progress"
     ) {
       ;(window as any).minimax = new Minimax(
-        mode === Mode.Misere,
         variation === Variation.Wild,
+        mode === Mode.Misere,
       )
       const move = (window as any).minimax.nextMove(board, currentPlayer)
       if (move === null) {

@@ -1,4 +1,4 @@
-import { PlayerType, adjacentCellArrangement } from "./const"
+import { BOARD_SIZE, PlayerType, adjacentCellArrangement } from "./const"
 
 export function isBoardEmpty(board: Board): boolean {
   return board.every((cell) => cell.symbol === null)
@@ -77,4 +77,12 @@ export function getGameStatusWithAdjacentCells(board: Board): {
   } else {
     return { gameStatus: "in-progress" }
   }
+}
+
+export function getEmptyBoard(): Board {
+  const board: Board = []
+  for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
+    board.push({ symbol: null, id: i.toString() })
+  }
+  return board
 }

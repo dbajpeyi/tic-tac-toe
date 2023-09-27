@@ -1,6 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import {
-  BOARD_SIZE,
   Mode,
   RESULT_DISPLAY_SLEEP_DURATION_MS,
   VSMode,
@@ -9,6 +8,7 @@ import {
 import { RootState } from "../../app/store"
 import {
   getDefaultFirstPlayer,
+  getEmptyBoard,
   getGameStatusWithAdjacentCells,
   getNextPlayer,
 } from "./utils"
@@ -24,17 +24,9 @@ export interface State {
   shouldShowResult: boolean
 }
 
-export function getInitialBoard(): Board {
-  const board: Board = []
-  for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
-    board.push({ symbol: null, id: i.toString() })
-  }
-  return board
-}
-
 export function getInitialState(): State {
   return {
-    board: getInitialBoard(),
+    board: getEmptyBoard(),
     currentPlayer: getDefaultFirstPlayer(false, false, true),
     gameStatus: "in-progress",
     mode: Mode.Regular,
@@ -82,7 +74,7 @@ const slice = createSlice({
       }
     },
     newGameStarted: (state) => {
-      state.board = getInitialBoard()
+      state.board = getEmptyBoard()
       state.gameStatus = "in-progress"
       state.adjacentCells = undefined
       state.shouldShowResult = false

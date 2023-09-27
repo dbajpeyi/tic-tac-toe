@@ -5,10 +5,10 @@ const MIN_EVALUATION_SCORE = -10
 const DRAW_EVALUATION_SCORE = 0
 
 export class Minimax {
-  #isMisere: boolean
   #isWild: boolean
+  #isMisere: boolean
 
-  constructor(isMisere: boolean, isWild: boolean) {
+  constructor(isWild: boolean, isMisere: boolean) {
     this.#isMisere = isMisere
     this.#isWild = isWild
   }
@@ -106,24 +106,30 @@ export class Minimax {
     return getNextPlayer(player, this.#isWild, this.#isMisere, true)
   }
 
-  nextMove(board: Board, aiPlayer: Player): Move | null {
-    let bestMove: Move | null = null
-    let finalEvaluation = -Infinity
-    const moves = this.#getAllPossibleMoves(board, aiPlayer.symbol ?? null)
-    for (const move of moves) {
-      const newBoard = this.#getNewBoardAfterMove(board, move)
-      let evaluation = this.#minimax(
-        newBoard,
-        0,
-        this.#getOpponentPlayer(aiPlayer),
-        -Infinity,
-        Infinity,
+  public nextMove(board: Board, aiPlayer: Player): Move | null {
+    if (!this.#isWild && aiPlayer.symbol == null) {
+      throw new Error(
+        "Cannot play next move without a symbol when game is in standard variation",
       )
-      if (evaluation > finalEvaluation) {
-        finalEvaluation = evaluation
-        bestMove = move
+    } else {
+      let bestMove = null
+      let finalEvaluation = -Infinity
+      const moves = this.#getAllPossibleMoves(board, aiPlayer.symbol ?? null)
+      for (const move of moves) {
+        const newBoard = this.#getNewBoardAfterMove(board, move)
+        let evaluation = this.#minimax(
+          newBoard,
+          0,
+          this.#getOpponentPlayer(aiPlayer),
+          -Infinity,
+          Infinity,
+        )
+        if (evaluation > finalEvaluation) {
+          finalEvaluation = evaluation
+          bestMove = move
+        }
       }
+      return bestMove
     }
-    return bestMove
   }
 }
