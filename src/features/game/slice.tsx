@@ -12,6 +12,7 @@ import {
   getGameStatusWithAdjacentCells,
   getNextPlayer,
 } from "./utils"
+import aiWorkerUrl from "./ai/worker?worker&url"
 
 export interface State {
   board: Board
@@ -22,6 +23,7 @@ export interface State {
   variation: Variation
   vsMode: VSMode
   shouldShowResult: boolean
+  isAiThinking?: boolean
 }
 
 export function getInitialState(): State {
@@ -38,11 +40,40 @@ export function getInitialState(): State {
 
 const initialState: State = getInitialState()
 
-export const gameEnded = createAsyncThunk("game/gameEnded", async () => {
-  const delay = (timeMs: number) =>
-    new Promise((resolve) => setTimeout(resolve, timeMs))
+const delay = (timeMs: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, timeMs)
+  })
+
+export const endGame = createAsyncThunk("game/endGame", async () => {
   await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
 })
+
+export const playAiMove = createAsyncThunk<void, void, { state: RootState }>(
+  "game/aiMovePlayed",
+  async (_, { getState }) => {
+    const { board, variation, mode, currentPlayer } = getState().game
+    await delay(300).then(() =>
+      window.aiWorker.postMessage({
+        board,
+        isWild: variation === Variation.Wild,
+        isMisere: mode === Mode.Misere,
+        currentPlayer,
+      }),
+    )
+  },
+)
+
+export const initWorkerIfNeeded = createAsyncThunk(
+  "game/initWorkerIfneeded",
+  async (_, { dispatch }) => {
+    window.aiWorker =
+      window.aiWorker ?? new Worker(aiWorkerUrl, { type: "module" })
+    window.aiWorker.onmessage = function (e: MessageEvent<Move>) {
+      dispatch(moveFromAiReceived(e.data))
+    }
+  },
+)
 
 const slice = createSlice({
   name: "game",
@@ -96,10 +127,34 @@ const slice = createSlice({
     playerTurnChosen: (state, action: PayloadAction<Player>) => {
       state.currentPlayer = action.payload
     },
+    moveFromAiReceived: (state, action: PayloadAction<Move>) => {
+      const { position, symbol } = action.payload
+      state.board[position] = {
+        id: position.toString(),
+        symbol: symbol,
+      }
+      const { gameStatus, adjacentCells } = getGameStatusWithAdjacentCells(
+        state.board,
+      )
+      state.gameStatus = gameStatus
+      state.adjacentCells = adjacentCells
+      if (gameStatus === "in-progress") {
+        state.currentPlayer = getNextPlayer(
+          state.currentPlayer,
+          state.variation === Variation.Wild,
+          state.mode === Mode.Misere,
+          state.vsMode === VSMode.AI,
+        )
+      }
+      state.isAiThinking = false
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(gameEnded.fulfilled, (state) => {
+    builder.addCase(endGame.fulfilled, (state) => {
       state.shouldShowResult = true
+    })
+    builder.addCase(playAiMove.pending, (state) => {
+      state.isAiThinking = true
     })
   },
 })
@@ -111,6 +166,7 @@ export const {
   modeSelected,
   vsModeSelected,
   playerTurnChosen,
+  moveFromAiReceived,
 } = slice.actions
 
 export const boardState = (state: RootState) => state.game.board

@@ -1,53 +1,53 @@
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import styles from "../Game.module.css"
-import { Minimax } from "../ai/ai"
-import { Mode, VSMode, Variation } from "../const"
-import { gameEnded, movePlayed, newGameStarted } from "../slice"
+import { VSMode } from "../const"
+import {
+  endGame,
+  initWorkerIfNeeded,
+  newGameStarted,
+  playAiMove,
+} from "../slice"
 import { isBoardEmpty } from "../utils"
 import { Board } from "./Board"
 import { Result } from "./Result"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
+import { Loader } from "./Loader"
 
 export function Game() {
   const {
     adjacentCells,
-    mode,
-    variation,
     vsMode,
     currentPlayer,
     board,
     gameStatus,
     shouldShowResult,
+    isAiThinking,
   } = useAppSelector((state) => state.game)
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(initWorkerIfNeeded())
+  })
+
   useEffect(() => {
     if (
       currentPlayer.name === "Player 2" &&
       vsMode === VSMode.AI &&
-      gameStatus === "in-progress"
+      gameStatus === "in-progress" &&
+      !isAiThinking!
     ) {
-      ;(window as any).minimax = new Minimax(
-        variation === Variation.Wild,
-        mode === Mode.Misere,
-      )
-      const move = (window as any).minimax.nextMove(board, currentPlayer)
-      if (move === null) {
-        throw new Error("move cannot be null")
-      } else {
-        dispatch(movePlayed(move))
-      }
+      dispatch(playAiMove())
     }
   })
-
-  const hasGameEnded = gameStatus === "win" || gameStatus === "draw"
 
   useEffect(() => {
     if (hasGameEnded && !shouldShowResult) {
-      dispatch(gameEnded())
+      dispatch(endGame())
     }
   })
+  const hasGameEnded = gameStatus === "win" || gameStatus === "draw"
 
   return (
     <>
@@ -61,7 +61,10 @@ export function Game() {
         {shouldShowResult ? (
           <Result isWin={gameStatus === "win"} />
         ) : (
-          <Board cellsToHighlight={adjacentCells} />
+          <>
+            {isAiThinking! && <Loader />}
+            <Board cellsToHighlight={adjacentCells} />
+          </>
         )}
       </div>
       <div className={styles.row}>

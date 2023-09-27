@@ -8,7 +8,16 @@ export interface BoardProps {
 }
 
 export function Board(props: BoardProps) {
-  const { board } = useAppSelector((state: RootState) => state.game)
+  const { board, isAiThinking } = useAppSelector(
+    (state: RootState) => state.game,
+  )
+
+  const isCellDisabled = (cell: Cell) => {
+    return (
+      cell.symbol != null || props.cellsToHighlight != null || isAiThinking!
+    )
+  }
+
   return (
     <div className={styles.grid}>
       {board.map((item) => {
@@ -19,7 +28,7 @@ export function Board(props: BoardProps) {
               isHighlighted: props.cellsToHighlight
                 ? props.cellsToHighlight.includes(+item.id)
                 : false,
-              isDisabled: item.symbol != null || props.cellsToHighlight != null,
+              isDisabled: isCellDisabled(item),
             }}
             key={item.id}
           />
