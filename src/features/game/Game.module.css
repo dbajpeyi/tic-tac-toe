@@ -8,7 +8,7 @@
   margin-top: 20px;
 }
 
-.row > .turninfo {
+.turninfo {
   margin-top: 20px;
   margin-bottom: 20px;
   font-size: 18px;
@@ -39,9 +39,9 @@
   cursor: pointer;
 }
 
-.turntabitem.underlined {
+.turntabitem.highlighted {
   color: firebrick;
-  background-color: rgba(255, 248, 220, 0.5);
+  background-color: rgba(255, 215, 0, 10);
   border-bottom: 1px solid rgba(128, 128, 128, 0.8);
   transition: all 0.3s ease 0s;
 }
@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   color: gray;
   height: 255px;
 }

@@ -7,14 +7,14 @@ import { getNextPlayer, isBoardEmpty } from "../utils"
 
 interface TurnTabItemProps {
   playerName: PlayerName
-  isUnderlined: boolean
+  isHighlighted: boolean
 }
 
 interface TurnTabProps {
   currentPlayer: Player
 }
 
-function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
+function TurnTabItem({ playerName, isHighlighted }: TurnTabItemProps) {
   const { mode, variation, vsMode, currentPlayer, board } = useAppSelector(
     (state: RootState) => state.game,
   )
@@ -26,7 +26,7 @@ function TurnTabItem({ playerName, isUnderlined }: TurnTabItemProps) {
     isBoardEmpty(board)
   return (
     <div
-      className={`${styles.turntabitem} ${isUnderlined && styles.underlined}`}
+      className={`${styles.turntabitem} ${isHighlighted && styles.highlighted}`}
       onClick={
         isClickable
           ? () =>
@@ -56,7 +56,7 @@ function TurnTab({ currentPlayer }: TurnTabProps) {
         <TurnTabItem
           key={name.replace(" ", "-")}
           playerName={name}
-          isUnderlined={currentPlayer.name === name}
+          isHighlighted={currentPlayer.name === name}
         />
       ))}
     </div>
