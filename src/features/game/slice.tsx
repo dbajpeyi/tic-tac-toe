@@ -19,6 +19,11 @@ import {
 } from "./utils"
 import aiWorkerUrl from "./ai/worker?worker&url"
 
+interface Score {
+  player: Record<PlayerName, number>
+  tie: number
+}
+
 export interface State {
   board: Board
   currentPlayer: Player
@@ -29,6 +34,7 @@ export interface State {
   vsMode: VSMode
   shouldShowResult: boolean
   isAiThinking?: boolean
+  score: Score
 }
 
 export function getInitialState(): State {
@@ -40,15 +46,9 @@ export function getInitialState(): State {
     variation: Variation.Standard,
     vsMode: VSMode.Human,
     shouldShowResult: false,
+    score: { player: { "Player 1": 0, "Player 2": 0 }, tie: 0 },
   }
 }
-
-const initialState: State = getInitialState()
-
-const delay = (timeMs: number) =>
-  new Promise((resolve) => {
-    setTimeout(resolve, timeMs)
-  })
 
 function updateStateOnMove(state: Draft<State>, move: Move) {
   const { position, symbol } = move
@@ -61,15 +61,28 @@ function updateStateOnMove(state: Draft<State>, move: Move) {
   )
   state.gameStatus = gameStatus
   state.adjacentCells = adjacentCells
+  const nextPlayer = getNextPlayer(
+    state.currentPlayer,
+    state.variation === Variation.Wild,
+    state.mode === Mode.Misere,
+    state.vsMode === VSMode.AI,
+  )
   if (gameStatus === "in-progress") {
-    state.currentPlayer = getNextPlayer(
-      state.currentPlayer,
-      state.variation === Variation.Wild,
-      state.mode === Mode.Misere,
-      state.vsMode === VSMode.AI,
-    )
+    state.currentPlayer = nextPlayer
+  } else if (gameStatus === "win") {
+    const winner = state.mode === Mode.Misere ? nextPlayer : state.currentPlayer
+    state.score["player"][winner.name] += 1
+  } else {
+    state.score["tie"] += 1
   }
 }
+
+const initialState: State = getInitialState()
+
+const delay = (timeMs: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, timeMs)
+  })
 
 export const endGame = createAsyncThunk("game/endGame", async () => {
   await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
@@ -163,13 +176,5 @@ export const {
   playerTurnChosen,
   moveFromAiReceived,
 } = slice.actions
-
-export const boardState = (state: RootState) => state.game.board
-export const currentPlayerState = (state: RootState) => state.game.currentPlayer
-export const gameStatusState = (state: RootState) => state.game.gameStatus
-export const adjacentCellsState = (state: RootState) => state.game.adjacentCells
-export const gameModeState = (state: RootState) => state.game.mode
-export const variationState = (state: RootState) => state.game.variation
-export const vsModeState = (state: RootState) => state.game.vsMode
 
 export default slice.reducer

@@ -64,7 +64,7 @@ function TurnTab({ currentPlayer }: TurnTabProps) {
 }
 
 export function TurnInfo() {
-  const currentPlayer = useAppSelector(currentPlayerState)
+  const { currentPlayer } = useAppSelector((state: RootState) => state.game)
   return (
     <>
       <div className={styles.turninfo}>

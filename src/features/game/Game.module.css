@@ -163,6 +163,27 @@
   }
 }
 
+.score {
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin-top: 30px;
+  padding: 10px;
+  font-size: 20px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+.score > div {
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.score > div > span {
+  font-weight: 200;
+  margin-right: 20px;
+}
+
 select {
   display: flex;
   font-size: 14px;

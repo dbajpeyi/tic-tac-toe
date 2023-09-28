@@ -14,6 +14,7 @@ import { Result } from "./Result"
 import { Settings } from "./Settings"
 import { TurnInfo } from "./TurnInfo"
 import { Loader } from "./Loader"
+import { Score } from "./Score"
 
 export function Game() {
   const {
@@ -79,6 +80,9 @@ export function Game() {
             New game
           </button>
         )}
+      </div>
+      <div className={styles.row}>
+        <Score />
       </div>
     </>
   )
