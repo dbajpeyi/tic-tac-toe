@@ -4,7 +4,17 @@
 
 A frontend webapp for tic-tac-toe game. It support a combination of various modes and variations and can be played with an AI player.
 
-The game is deployed [here](https://tic-tac-toe-5da1e.web.app/)
+# Some technical notes
+
+- The application uses immer, which means that state update in reducers can look strange, e,g
+
+```
+    state.value += 1
+```
+
+If you see something like this in the reducer, don't freak out. It's not actually mutating the state, just hides the immutability underneath.
+
+- The game is deployed [here](https://tic-tac-toe-5da1e.web.app/)
 
 ## Scripts for development and building
 
