@@ -79,10 +79,16 @@ function updateStateOnMove(state: Draft<State>, move: Move) {
 
 const initialState: State = getInitialState()
 
-const delay = (timeMs: number) =>
-  new Promise((resolve) => {
+const delay = (timeMs: number) => {
+  /*
+  Probably a thunk that is called "delayedAction" would be nicer and more generic
+  but with the given time constraints I am skipping it. It requires some thinking to 
+  do well! For our limited us case this will do for now
+*/
+  return new Promise((resolve) => {
     setTimeout(resolve, timeMs)
   })
+}
 
 export const endGame = createAsyncThunk("game/endGame", async () => {
   await delay(RESULT_DISPLAY_SLEEP_DURATION_MS)
