@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
 import styles from "../Game.module.css"
 import { Mode, VSMode, Variation } from "../const"
-import { currentPlayerState, playerTurnChosen } from "../slice"
+import { playerTurnChosen } from "../slice"
 import { getNextPlayer, isBoardEmpty } from "../utils"
 
 interface TurnTabItemProps {
