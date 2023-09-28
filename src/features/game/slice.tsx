@@ -20,7 +20,8 @@ import {
 import aiWorkerUrl from "./ai/worker?worker&url"
 
 interface Score {
-  player: Record<PlayerName, number>
+  player1: number
+  player2: number
   tie: number
 }
 
@@ -37,6 +38,10 @@ export interface State {
   score: Score
 }
 
+export function getInitialScore(): Score {
+  return { player1: 0, player2: 0, tie: 0 }
+}
+
 export function getInitialState(): State {
   return {
     board: getEmptyBoard(),
@@ -46,7 +51,7 @@ export function getInitialState(): State {
     variation: Variation.Standard,
     vsMode: VSMode.Human,
     shouldShowResult: false,
-    score: { player: { "Player 1": 0, "Player 2": 0 }, tie: 0 },
+    score: getInitialScore(),
   }
 }
 
@@ -71,7 +76,11 @@ function updateStateOnMove(state: Draft<State>, move: Move) {
     state.currentPlayer = nextPlayer
   } else if (gameStatus === "win") {
     const winner = state.mode === Mode.Misere ? nextPlayer : state.currentPlayer
-    state.score["player"][winner.name] += 1
+    if (winner.name === "Player 1") {
+      state.score.player1 += 1
+    } else {
+      state.score.player2 += 1
+    }
   } else {
     state.score["tie"] += 1
   }
@@ -95,7 +104,7 @@ export const endGame = createAsyncThunk("game/endGame", async () => {
 })
 
 export const playAiMove = createAsyncThunk<void, void, { state: RootState }>(
-  "game/aiMovePlayed",
+  "game/playAiMove",
   async (_, { getState }) => {
     const { board, variation, mode, currentPlayer } = getState().game
     await delay(300).then(() =>
@@ -109,16 +118,23 @@ export const playAiMove = createAsyncThunk<void, void, { state: RootState }>(
   },
 )
 
+export const setAiMove = createAsyncThunk(
+  "game/setAiMove",
+  async (move: Move) => move,
+)
+
 export const initWorkerIfNeeded = createAsyncThunk(
   "game/initWorkerIfneeded",
   async (_, { dispatch }) => {
-    window.aiWorker =
-      window.aiWorker ?? new Worker(aiWorkerUrl, { type: "module" })
-    window.aiWorker.onmessage = (e: MessageEvent<Move>) => {
-      dispatch(moveFromAiReceived(e.data))
-    }
-    window.aiWorker.onerror = (e: ErrorEvent) => {
-      throw new Error(`aiWorker threw an error ${e.message}`)
+    if (window.aiWorker == null) {
+      window.aiWorker =
+        window.aiWorker ?? new Worker(aiWorkerUrl, { type: "module" })
+      window.aiWorker.onmessage = (e: MessageEvent<Move>) => {
+        dispatch(setAiMove(e.data))
+      }
+      window.aiWorker.onerror = (e: ErrorEvent) => {
+        throw new Error(`aiWorker threw an error ${e.message}`)
+      }
     }
   },
 )
@@ -154,13 +170,10 @@ const slice = createSlice({
     },
     vsModeSelected: (state, action: PayloadAction<VSMode>) => {
       state.vsMode = action.payload
+      state.score = getInitialScore()
     },
     playerTurnChosen: (state, action: PayloadAction<Player>) => {
       state.currentPlayer = action.payload
-    },
-    moveFromAiReceived: (state, action: PayloadAction<Move>) => {
-      updateStateOnMove(state, action.payload)
-      state.isAiThinking = false
     },
   },
   extraReducers: (builder) => {
@@ -169,6 +182,10 @@ const slice = createSlice({
     })
     builder.addCase(playAiMove.pending, (state) => {
       state.isAiThinking = true
+    })
+    builder.addCase(setAiMove.fulfilled, (state, action) => {
+      updateStateOnMove(state, action.payload)
+      state.isAiThinking = false
     })
   },
 })
@@ -180,7 +197,6 @@ export const {
   modeSelected,
   vsModeSelected,
   playerTurnChosen,
-  moveFromAiReceived,
 } = slice.actions
 
 export default slice.reducer

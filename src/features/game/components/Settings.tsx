@@ -34,7 +34,7 @@ export function DropDown({
         disabled={isDisabled}
       >
         {optionValues.map((value) => (
-          <option key={value} selected={value === defaultValue}>
+          <option key={value} defaultValue={defaultValue}>
             {value}
           </option>
         ))}

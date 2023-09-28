@@ -7,11 +7,11 @@ export function Score() {
   return (
     <div className={styles.score}>
       <div>
-        <span>Player 1</span> {score.player["Player 1"]}
+        <span>Player 1</span> {score.player1}
       </div>
       <div>
         <span>Player 2</span>
-        {score.player["Player 2"]}
+        {score.player2}
       </div>
       <div>
         <span>Tie</span>
